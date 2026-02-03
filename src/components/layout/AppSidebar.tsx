@@ -57,6 +57,7 @@ const navForecasting = [
 ];
 
 const navGeneral = [
+  { title: "Notifications", url: "/notifications", icon: IconBell },
   { title: "Settings", url: "/settings", icon: IconSettings },
   { title: "Help", url: "/help", icon: IconHelp },
 ];
