@@ -17,9 +17,10 @@ import { Button } from "@/components/ui/button";
 
 interface UserNavProps {
   showDetails?: boolean;
+  className?: string;
 }
 
-export function UserNav({ showDetails = true }: UserNavProps) {
+export function UserNav({ showDetails = true, className }: UserNavProps) {
   const user = {
     name: "John Smith",
     email: "john.smith@store.com",
