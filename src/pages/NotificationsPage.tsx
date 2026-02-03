@@ -173,7 +173,7 @@ export default function NotificationsPage() {
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-flex">
               <TabsTrigger value="all" className="gap-2">
-                <Badge variant="secondary" className="size-6 rounded-full p-0 text-xs">
+                <Badge >
                   {allCount}
                 </Badge>
                 All
