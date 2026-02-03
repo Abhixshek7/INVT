@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import {
   IconBell,
   IconMail,
@@ -52,6 +52,7 @@ const navForecasting = [
 ];
 
 const navGeneral = [
+  { title: "Notifications", url: "/notifications", icon: IconBell },
   { title: "Settings", url: "/settings", icon: IconSettings },
   { title: "Help", url: "/help", icon: IconHelp },
 ];
@@ -138,12 +139,14 @@ export function TopBar() {
         </Button>
 
         {/* Notifications */}
-        <Button variant="ghost" size="icon" className="h-9 w-9 relative">
-          <IconBell className="h-5 w-5" />
-          <Badge className="absolute -right-0.5 -top-0.5 h-4 w-4 rounded-full p-0 text-[10px] flex items-center justify-center">
-            5
-          </Badge>
-          <span className="sr-only">Notifications</span>
+        <Button variant="ghost" size="icon" className="h-9 w-9 relative" asChild>
+          <Link to="/notifications">
+            <IconBell className="h-5 w-5" />
+            <Badge className="absolute -right-0.5 -top-0.5 h-4 w-4 rounded-full p-0 text-[10px] flex items-center justify-center">
+              5
+            </Badge>
+            <span className="sr-only">Notifications</span>
+          </Link>
         </Button>
 
         {/* Theme Toggle */}
