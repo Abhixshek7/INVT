@@ -5,16 +5,18 @@ import { cn } from "@/lib/utils";
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & { 
-    variant?: "default" | "gradient" | "stat";
+    variant?: "default" | "gradient" | "stat" | "glass";
   }
 >(({ className, variant = "default", ...props }, ref) => (
   <div
     ref={ref}
     data-slot="card"
     className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
-      variant === "gradient" && "bg-gradient-to-t from-primary/5 to-card",
-      variant === "stat" && "bg-gradient-to-t from-primary/5 to-card hover:shadow-md transition-shadow",
+      "rounded-xl text-card-foreground transition-all duration-200",
+      variant === "default" && "bg-card/60 backdrop-blur-xl border border-border/40 shadow-lg",
+      variant === "gradient" && "bg-gradient-to-t from-primary/10 to-card/60 backdrop-blur-xl border border-border/40 shadow-lg",
+      variant === "stat" && "bg-gradient-to-t from-primary/10 to-card/60 backdrop-blur-xl border border-border/40 shadow-lg hover:shadow-xl hover:border-primary/30",
+      variant === "glass" && "bg-card/40 backdrop-blur-2xl border border-white/20 shadow-xl",
       className
     )}
     {...props}
