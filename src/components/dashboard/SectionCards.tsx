@@ -60,7 +60,7 @@ export function SectionCards() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {stats.map((stat) => (
-        <Card key={stat.title} variant="gradient" className="@container/card">
+        <Card key={stat.title}  className="@container/card">
           <CardHeader className="flex flex-row items-start justify-between pb-2">
             <div className="space-y-1">
               <CardDescription className="flex items-center gap-2">
