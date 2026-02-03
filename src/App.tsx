@@ -14,6 +14,7 @@ import DashboardPage from "./pages/DashboardPage";
 import InventoryPage from "./pages/InventoryPage";
 import LowStockPage from "./pages/LowStockPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
+import NotificationsPage from "./pages/NotificationsPage";
 
 import NotFound from "./pages/NotFound";
 
@@ -47,7 +48,7 @@ const App = () => (
             <Route path="/users" element={<DashboardPage />} />
             <Route path="/settings" element={<DashboardPage />} />
             <Route path="/configuration" element={<DashboardPage />} />
-            <Route path="/notifications" element={<DashboardPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/help" element={<DashboardPage />} />
 
             {/* Root redirect */}
