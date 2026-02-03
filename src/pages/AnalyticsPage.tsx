@@ -14,7 +14,7 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card variant="gradient">
+          <Card >
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardDescription>Turnover Ratio</CardDescription>
               <IconChartBar className="size-4 text-muted-foreground" />
@@ -24,7 +24,7 @@ export default function AnalyticsPage() {
               <p className="text-xs text-muted-foreground">+0.3 from last month</p>
             </CardContent>
           </Card>
-          <Card variant="gradient">
+          <Card >
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardDescription>Service Level</CardDescription>
               <IconTarget className="size-4 text-muted-foreground" />
@@ -34,7 +34,7 @@ export default function AnalyticsPage() {
               <p className="text-xs text-muted-foreground">Target: 95%</p>
             </CardContent>
           </Card>
-          <Card variant="gradient">
+          <Card >
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardDescription>Avg. Days in Stock</CardDescription>
               <IconCalendar className="size-4 text-muted-foreground" />
@@ -44,7 +44,7 @@ export default function AnalyticsPage() {
               <p className="text-xs text-muted-foreground">-1.2 from last month</p>
             </CardContent>
           </Card>
-          <Card variant="gradient">
+          <Card >
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardDescription>Forecast Accuracy</CardDescription>
               <IconTrendingUp className="size-4 text-muted-foreground" />
