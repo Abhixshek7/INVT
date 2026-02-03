@@ -114,23 +114,6 @@
 }
 
 @layer utilities {
-  /* Glassmorphism utilities */
-  .glass {
-    @apply bg-background/70 backdrop-blur-xl border border-border/50 shadow-lg;
-  }
-  
-  .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-border/40 shadow-lg;
-  }
-  
-  .glass-sidebar {
-    @apply bg-sidebar-background/80 backdrop-blur-xl border-r border-sidebar-border/50;
-  }
-  
-  .glass-topbar {
-    @apply bg-background/70 backdrop-blur-xl border-b border-border/50 shadow-sm;
-  }
-
   /* Status badge utilities */
   .status-critical {
     @apply bg-[hsl(var(--stock-critical))] text-white;
