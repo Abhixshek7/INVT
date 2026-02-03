@@ -16,6 +16,9 @@ import {
   IconFileInvoice,
   IconAdjustments,
   IconBox,
+  IconChevronsLeft,
+  IconChevronsRight,
+  IconLogout,
 } from "@tabler/icons-react";
 
 import { NavLink } from "@/components/NavLink";
@@ -32,16 +35,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { IconChevronUp } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
 
 const navMain = [
   { title: "Dashboard", url: "/dashboard", icon: IconDashboard },
@@ -62,27 +56,21 @@ const navForecasting = [
   { title: "Reorder Suggestions", url: "/reorder", icon: IconRefresh },
 ];
 
-const navAdmin = [
-  { title: "Users", url: "/users", icon: IconUsers },
+const navGeneral = [
   { title: "Settings", url: "/settings", icon: IconSettings },
-  { title: "Configuration", url: "/configuration", icon: IconAdjustments },
-];
-
-const navSecondary = [
-  { title: "Notifications", url: "/notifications", icon: IconBell },
   { title: "Help", url: "/help", icon: IconHelp },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
-  const { state } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
   const collapsed = state === "collapsed";
 
   const isActive = (url: string) => location.pathname === url;
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="border-b border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -93,12 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <IconPackage className="size-4" />
               </div>
               {!collapsed && (
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">InventoryPro</span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    Retail Optimization
-                  </span>
-                </div>
+                <span className="text-lg font-semibold">INVT</span>
               )}
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -108,7 +91,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Overview</SidebarGroupLabel>
+          <SidebarGroupLabel>MENU</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navMain.map((item) => (
@@ -131,7 +114,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         {/* Supply Chain */}
         <SidebarGroup>
-          <SidebarGroupLabel>Supply Chain</SidebarGroupLabel>
+          <SidebarGroupLabel>SUPPLY CHAIN</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navSupplyChain.map((item) => (
@@ -154,7 +137,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         {/* Forecasting */}
         <SidebarGroup>
-          <SidebarGroupLabel>Forecasting</SidebarGroupLabel>
+          <SidebarGroupLabel>FORECASTING</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navForecasting.map((item) => (
@@ -175,34 +158,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Admin */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Administration</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navAdmin.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    tooltip={item.title}
-                  >
-                    <NavLink to={item.url}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* Secondary - pushed to bottom */}
+        {/* General - pushed towards bottom */}
         <SidebarGroup className="mt-auto">
+          <SidebarGroupLabel>GENERAL</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navSecondary.map((item) => (
+              {navGeneral.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
@@ -216,72 +177,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Logout" className="text-destructive hover:text-destructive">
+                  <IconLogout className="size-4" />
+                  <span>Logout</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src="/avatars/user.jpg" alt="User" />
-                    <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
-                      SM
-                    </AvatarFallback>
-                  </Avatar>
-                  {!collapsed && (
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        Sarah Mitchell
-                      </span>
-                      <span className="truncate text-xs text-muted-foreground">
-                        Store Manager
-                      </span>
-                    </div>
-                  )}
-                  {!collapsed && <IconChevronUp className="ml-auto size-4" />}
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                side="top"
-                align="end"
-                sideOffset={4}
-              >
-                <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src="/avatars/user.jpg" alt="User" />
-                      <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
-                        SM
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        Sarah Mitchell
-                      </span>
-                      <span className="truncate text-xs text-muted-foreground">
-                        sarah.mitchell@retail.com
-                      </span>
-                    </div>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Log out</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <SidebarFooter className="border-t border-sidebar-border">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleSidebar}
+          className="w-full justify-center"
+        >
+          {collapsed ? (
+            <IconChevronsRight className="size-4" />
+          ) : (
+            <>
+              <IconChevronsLeft className="size-4 mr-2" />
+              <span>Collapse</span>
+            </>
+          )}
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
