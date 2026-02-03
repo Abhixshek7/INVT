@@ -69,7 +69,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isActive = (url: string) => location.pathname === url;
 
   return (
-    <Sidebar collapsible="icon" className="bg-sidebar-background/80 backdrop-blur-xl border-r border-sidebar-border/50" {...props}>
+    <Sidebar collapsible="icon" className="bg-white/15 dark:bg-white/10 backdrop-blur-[19px] border-r border-white/30" {...props}>
       <SidebarHeader className="border-b border-sidebar-border/50">
         <SidebarMenu>
           <SidebarMenuItem>
