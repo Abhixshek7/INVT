@@ -7,7 +7,7 @@ import { UserNav } from "./UserNav";
 
 export function TopBar() {
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center bg-white/15 dark:bg-white/10 backdrop-blur-[19px] border-b border-white/30 shadow-[0_8px_32px_rgba(0,0,0,0.1)] px-4 lg:px-6">
+    <header className="sticky top-0 z-40 flex h-16 items-center bg-background/70 backdrop-blur-xl border-b border-border/50 shadow-sm px-4 lg:px-6">
       {/* Search Bar - Left/Center */}
       <div className="flex-1 flex justify-start px-4">
         <div className="relative w-full max-w-md">
