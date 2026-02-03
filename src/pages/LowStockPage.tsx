@@ -196,7 +196,7 @@ export default function LowStockPage() {
 
         {/* Summary Cards */}
         <div className="grid gap-4 sm:grid-cols-3">
-          <Card variant="gradient">
+          <Card >
             <CardHeader className="pb-2">
               <CardDescription>Critical Items</CardDescription>
               <CardTitle className="text-3xl font-bold text-destructive">
@@ -209,7 +209,7 @@ export default function LowStockPage() {
               </p>
             </CardContent>
           </Card>
-          <Card variant="gradient">
+          <Card >
             <CardHeader className="pb-2">
               <CardDescription>Low Stock Items</CardDescription>
               <CardTitle className="text-3xl font-bold text-warning">
@@ -222,7 +222,7 @@ export default function LowStockPage() {
               </p>
             </CardContent>
           </Card>
-          <Card variant="gradient">
+          <Card>
             <CardHeader className="pb-2">
               <CardDescription>Est. Stockout Risk</CardDescription>
               <CardTitle className="text-3xl font-bold">
