@@ -7,6 +7,7 @@ import { SiteHeader } from "./SiteHeader";
 interface DashboardLayoutProps {
   children: ReactNode;
   title?: string;
+  description?: string;
 }
 
 export function DashboardLayout({ children, title }: DashboardLayoutProps) {
