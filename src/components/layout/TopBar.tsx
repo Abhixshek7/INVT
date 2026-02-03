@@ -7,7 +7,7 @@ import { UserNav } from "./UserNav";
 
 export function TopBar() {
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center border-b bg-background px-4 lg:px-6">
+    <header className="sticky top-0 z-40 flex h-16 items-center bg-background/70 backdrop-blur-xl border-b border-border/50 shadow-sm px-4 lg:px-6">
       {/* Search Bar - Left/Center */}
       <div className="flex-1 flex justify-start px-4">
         <div className="relative w-full max-w-md">
@@ -15,7 +15,7 @@ export function TopBar() {
           <Input
             type="search"
             placeholder="Search task"
-            className="w-full pl-9 pr-12 h-10 bg-muted/50 border-0"
+            className="w-full pl-9 pr-12 h-10 bg-muted/30 backdrop-blur-sm border-border/30 focus:bg-muted/50"
           />
           <kbd className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
             <span className="text-xs">⌘</span>F
