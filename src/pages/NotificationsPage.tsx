@@ -142,7 +142,7 @@ export default function NotificationsPage() {
 
   return (
     <DashboardLayout title="Notifications">
-      <Card>
+      <Card className="w-full overflow-hidden">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <div className="flex items-center gap-3">
             <IconBell className="size-6" />
@@ -193,7 +193,7 @@ export default function NotificationsPage() {
                     key={notification.id}
                     onClick={() => markAsRead(notification.id)}
                     className={cn(
-                      "flex items-center gap-3 rounded-lg p-3 transition-colors cursor-pointer",
+                      "flex items-center gap-2 sm:gap-3 rounded-lg p-2 sm:p-3 transition-colors cursor-pointer min-w-0",
                       !notification.isRead
                         ? "bg-destructive/5 hover:bg-destructive/10"
                         : "hover:bg-muted/50"
@@ -224,16 +224,16 @@ export default function NotificationsPage() {
                       )}
                     </Button>
 
-                    {/* Clipboard icon */}
-                    <Button variant="ghost" size="icon" className="size-8 shrink-0">
+                    {/* Clipboard icon - hidden on mobile */}
+                    <Button variant="ghost" size="icon" className="size-8 shrink-0 hidden sm:flex">
                       <IconClipboard className="size-4 text-muted-foreground" />
                     </Button>
 
                     {/* Message */}
-                    <p className="flex-1 truncate text-sm">{notification.message}</p>
+                    <p className="flex-1 truncate text-sm min-w-0">{notification.message}</p>
 
                     {/* Timestamp */}
-                    <span className="shrink-0 text-xs text-muted-foreground">
+                    <span className="shrink-0 text-xs text-muted-foreground whitespace-nowrap">
                       {notification.timestamp}
                     </span>
 
