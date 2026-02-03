@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
+import { TopBar } from "./TopBar";
 import { SiteHeader } from "./SiteHeader";
 
 interface DashboardLayoutProps {
@@ -11,7 +12,10 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children, title }: DashboardLayoutProps) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      {/* Fixed Top Bar */}
+      <TopBar />
+      
+      <div className="flex min-h-screen w-full pt-16">
         <AppSidebar />
         <SidebarInset className="flex flex-col flex-1">
           <SiteHeader title={title} />

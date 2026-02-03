@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 // Auth Pages
 import LoginPage from "./pages/auth/LoginPage";
@@ -20,42 +21,44 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          {/* Auth Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+    <ThemeProvider defaultTheme="system" storageKey="invt-theme">
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Auth Routes */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-          {/* Dashboard Routes */}
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/inventory" element={<InventoryPage />} />
-          <Route path="/low-stock" element={<LowStockPage />} />
-          <Route path="/analytics" element={<AnalyticsPage />} />
+            {/* Dashboard Routes */}
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/inventory" element={<InventoryPage />} />
+            <Route path="/low-stock" element={<LowStockPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
 
-          {/* Placeholder routes for other sections */}
-          <Route path="/purchase-orders" element={<DashboardPage />} />
-          <Route path="/warehouse" element={<DashboardPage />} />
-          <Route path="/shipments" element={<DashboardPage />} />
-          <Route path="/suppliers" element={<DashboardPage />} />
-          <Route path="/forecast" element={<DashboardPage />} />
-          <Route path="/reorder" element={<DashboardPage />} />
-          <Route path="/users" element={<DashboardPage />} />
-          <Route path="/settings" element={<DashboardPage />} />
-          <Route path="/configuration" element={<DashboardPage />} />
-          <Route path="/notifications" element={<DashboardPage />} />
-          <Route path="/help" element={<DashboardPage />} />
+            {/* Placeholder routes for other sections */}
+            <Route path="/purchase-orders" element={<DashboardPage />} />
+            <Route path="/warehouse" element={<DashboardPage />} />
+            <Route path="/shipments" element={<DashboardPage />} />
+            <Route path="/suppliers" element={<DashboardPage />} />
+            <Route path="/forecast" element={<DashboardPage />} />
+            <Route path="/reorder" element={<DashboardPage />} />
+            <Route path="/users" element={<DashboardPage />} />
+            <Route path="/settings" element={<DashboardPage />} />
+            <Route path="/configuration" element={<DashboardPage />} />
+            <Route path="/notifications" element={<DashboardPage />} />
+            <Route path="/help" element={<DashboardPage />} />
 
-          {/* Root redirect */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+            {/* Root redirect */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
 
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+            {/* 404 */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
