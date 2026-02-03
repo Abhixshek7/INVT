@@ -1,4 +1,4 @@
-import { IconBell, IconMail, IconSearch, IconPackage } from "@tabler/icons-react";
+import { IconBell, IconMail, IconSearch } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -7,17 +7,9 @@ import { UserNav } from "./UserNav";
 
 export function TopBar() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center border-b bg-background px-4 lg:px-6">
-      {/* Logo */}
-      <div className="flex items-center gap-2 min-w-[200px]">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-          <IconPackage className="h-5 w-5 text-primary-foreground" />
-        </div>
-        <span className="text-lg font-semibold">INVT</span>
-      </div>
-
-      {/* Search Bar - Center */}
-      <div className="flex-1 flex justify-center px-4">
+    <header className="sticky top-0 z-40 flex h-16 items-center border-b bg-background px-4 lg:px-6">
+      {/* Search Bar - Left/Center */}
+      <div className="flex-1 flex justify-start px-4">
         <div className="relative w-full max-w-md">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
