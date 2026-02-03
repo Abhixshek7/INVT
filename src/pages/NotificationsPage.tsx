@@ -1,0 +1,267 @@
+import { useState } from "react";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  IconBell,
+  IconDotsVertical,
+  IconSearch,
+  IconStar,
+  IconStarFilled,
+  IconClipboard,
+  IconTrash,
+} from "@tabler/icons-react";
+import { cn } from "@/lib/utils";
+
+interface Notification {
+  id: string;
+  message: string;
+  timestamp: string;
+  isRead: boolean;
+  isFavorite: boolean;
+  isArchived: boolean;
+}
+
+const mockNotifications: Notification[] = [
+  {
+    id: "1",
+    message: "We're pleased to inform you that a new customer has registered! Please follow up promptly by contacting.",
+    timestamp: "Just Now",
+    isRead: false,
+    isFavorite: false,
+    isArchived: false,
+  },
+  {
+    id: "2",
+    message: "Hello Sales Marketing Team, We have a special offer for our customers! Enjoy a 20% discount on selected..",
+    timestamp: "30 min ago",
+    isRead: false,
+    isFavorite: true,
+    isArchived: false,
+  },
+  {
+    id: "3",
+    message: "Hello Sales Marketing Team, This is a reminder to achieve this month's sales target. Currently, we've....",
+    timestamp: "2 days ago",
+    isRead: false,
+    isFavorite: false,
+    isArchived: false,
+  },
+  {
+    id: "4",
+    message: "Hello Sales Marketing Team, We've received a product information request from a potential customer.",
+    timestamp: "5 days ago",
+    isRead: false,
+    isFavorite: true,
+    isArchived: false,
+  },
+  {
+    id: "5",
+    message: "Hello Sales Marketing Team, We've received a product information request from a potential customer.",
+    timestamp: "07 Feb, 2024",
+    isRead: true,
+    isFavorite: false,
+    isArchived: false,
+  },
+  {
+    id: "6",
+    message: "Hello Sales Marketing Team, A meeting or presentation has been scheduled with a customer/prospect.",
+    timestamp: "01 Feb, 2024",
+    isRead: true,
+    isFavorite: false,
+    isArchived: false,
+  },
+  {
+    id: "7",
+    message: "Hello Sales Marketing Team, This is a reminder to review the contract or proposal currently under....",
+    timestamp: "28 Jan, 2024",
+    isRead: true,
+    isFavorite: false,
+    isArchived: false,
+  },
+  {
+    id: "8",
+    message: "Hello Sales Marketing Team, It's time for a follow-up with a customer after their recent purchase/meeting.",
+    timestamp: "27 Jan, 2024",
+    isRead: true,
+    isFavorite: false,
+    isArchived: false,
+  },
+  {
+    id: "9",
+    message: "Hello Sales Marketing Team, We've received positive feedback/testimonial from a satisfied customer...",
+    timestamp: "26 Jan, 2024",
+    isRead: true,
+    isFavorite: false,
+    isArchived: true,
+  },
+  {
+    id: "10",
+    message: "Hello Sales Marketing Team, This is a reminder regarding an outstanding payment from a customer......",
+    timestamp: "28 Jan, 2024",
+    isRead: true,
+    isFavorite: false,
+    isArchived: true,
+  },
+];
+
+export default function NotificationsPage() {
+  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
+
+  const toggleFavorite = (id: string) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isFavorite: !n.isFavorite } : n))
+    );
+  };
+
+  const deleteNotification = (id: string) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const markAsRead = (id: string) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+    );
+  };
+
+  const filteredNotifications = notifications.filter((n) => {
+    const matchesSearch = n.message.toLowerCase().includes(searchQuery.toLowerCase());
+    if (activeTab === "archive") return matchesSearch && n.isArchived;
+    if (activeTab === "favorite") return matchesSearch && n.isFavorite;
+    return matchesSearch && !n.isArchived;
+  });
+
+  const allCount = notifications.filter((n) => !n.isArchived).length;
+  const archiveCount = notifications.filter((n) => n.isArchived).length;
+  const favoriteCount = notifications.filter((n) => n.isFavorite).length;
+
+  return (
+    <DashboardLayout title="Notifications">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+          <div className="flex items-center gap-3">
+            <IconBell className="size-6" />
+            <CardTitle className="text-xl font-semibold">List Notification</CardTitle>
+          </div>
+          <Button variant="ghost" size="icon">
+            <IconDotsVertical className="size-5" />
+          </Button>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Count and Search */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-muted-foreground">
+              {notifications.length} Notification
+            </p>
+            <div className="relative w-full sm:w-64">
+              <IconSearch className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search by Name Product"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3 sm:w-auto sm:inline-flex">
+              <TabsTrigger value="all" className="gap-2">
+                <Badge variant="secondary" className="size-6 rounded-full p-0 text-xs">
+                  {allCount}
+                </Badge>
+                All
+              </TabsTrigger>
+              <TabsTrigger value="archive" className="gap-2">
+                {archiveCount} Archive
+              </TabsTrigger>
+              <TabsTrigger value="favorite" className="gap-2">
+                {favoriteCount} Favorite
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value={activeTab} className="mt-4">
+              <div className="space-y-1">
+                {filteredNotifications.map((notification) => (
+                  <div
+                    key={notification.id}
+                    onClick={() => markAsRead(notification.id)}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg p-3 transition-colors cursor-pointer",
+                      !notification.isRead
+                        ? "bg-destructive/5 hover:bg-destructive/10"
+                        : "hover:bg-muted/50"
+                    )}
+                  >
+                    {/* Unread indicator */}
+                    <div
+                      className={cn(
+                        "size-2 shrink-0 rounded-full",
+                        !notification.isRead ? "bg-primary" : "bg-transparent"
+                      )}
+                    />
+
+                    {/* Favorite toggle */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 shrink-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(notification.id);
+                      }}
+                    >
+                      {notification.isFavorite ? (
+                        <IconStarFilled className="size-4 text-yellow-500" />
+                      ) : (
+                        <IconStar className="size-4 text-muted-foreground" />
+                      )}
+                    </Button>
+
+                    {/* Clipboard icon */}
+                    <Button variant="ghost" size="icon" className="size-8 shrink-0">
+                      <IconClipboard className="size-4 text-muted-foreground" />
+                    </Button>
+
+                    {/* Message */}
+                    <p className="flex-1 truncate text-sm">{notification.message}</p>
+
+                    {/* Timestamp */}
+                    <span className="shrink-0 text-xs text-muted-foreground">
+                      {notification.timestamp}
+                    </span>
+
+                    {/* Delete button */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 shrink-0 rounded-full bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deleteNotification(notification.id);
+                      }}
+                    >
+                      <IconTrash className="size-4" />
+                    </Button>
+                  </div>
+                ))}
+
+                {filteredNotifications.length === 0 && (
+                  <div className="py-12 text-center text-muted-foreground">
+                    No notifications found
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </DashboardLayout>
+  );
+}
