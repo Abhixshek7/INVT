@@ -79,12 +79,12 @@ export default function LoginPage() {
               <IconPackage className="size-6" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                InventoryPro
+              <h1 className="text-2xl font-bold text-foreground text-center">
+                INVT
               </h1>
-              <p className="text-sm text-muted-foreground">
+              {/* <p className="text-sm text-muted-foreground">
                 Retail Optimization System
-              </p>
+              </p> */}
             </div>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function LoginPage() {
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
             <CardDescription>
-              Enter your credentials to access your dashboard
+              Enter your credentials 
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
@@ -202,12 +202,12 @@ export default function LoginPage() {
 
               <Button
                 type="button"
-                variant="outline"
+               
                 className="w-full h-11"
                 onClick={handleGoogleLogin}
               >
                 <IconBrandGoogle className="mr-2 size-4" />
-                Google
+                Login with Google
               </Button>
               <p className="text-sm text-muted-foreground text-center">
                 Need access?{" "}
@@ -220,9 +220,9 @@ export default function LoginPage() {
         </Card>
 
         {/* Footer */}
-        <p className="text-center text-sm text-muted-foreground mt-8">
+        {/* <p className="text-center text-sm text-muted-foreground mt-8">
           © 2024 InventoryPro. All rights reserved.
-        </p>
+        </p> */}
       </div>
     </div>
   );
