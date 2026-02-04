@@ -29,7 +29,7 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 // @access  Public
 router.get('/google/callback',
     (req, res, next) => {
-        console.log('Google Callback Query:', req.query);
+        // console.log('Google Callback Query:', req.query);
         next();
     },
     passport.authenticate('google', { session: false, failureRedirect: '/login' }),
