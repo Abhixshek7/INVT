@@ -70,10 +70,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
-      <div className="w-full max-w-md animate-fade-in">
+    <div className="min-h-screen flex items-center justify-center  p-4">
+      <div className="w-full max-w-md animate-fade-out">
         {/* Logo */}
-        <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center justify-center mb-4">
           <div className="flex items-center gap-3">
             <div className="flex aspect-square size-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg">
               <IconPackage className="size-6" />
