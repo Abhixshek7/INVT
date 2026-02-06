@@ -28,11 +28,10 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 // @desc    Google auth callback
 // @access  Public
 router.get('/google/callback',
-    (req, res, next) => {
-        // console.log('Google Callback Query:', req.query);
-        next();
-    },
-    passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+    passport.authenticate('google', {
+        session: false,
+        failureRedirect: `${process.env.FRONTEND_URL}/login?error=unauthorized`
+    }),
     authController.googleCallback
 );
 

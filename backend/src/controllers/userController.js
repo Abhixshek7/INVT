@@ -3,8 +3,13 @@ const pool = require('../config/db');
 // Get all users (Admin only)
 exports.getAllUsers = async (req, res) => {
     try {
+        // Only return users with assigned roles (not 'user' or NULL)
         const users = await pool.query(
-            'SELECT id, username, email, role, avatar_url, created_at FROM users ORDER BY created_at DESC'
+            `SELECT id, username, email, role, avatar_url, created_at 
+             FROM users 
+             WHERE role IS NOT NULL 
+             AND role != 'user' 
+             ORDER BY created_at DESC`
         );
         res.json(users.rows);
     } catch (err) {
@@ -65,14 +70,18 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
-// Invite user (Admin only) - sends invitation link
+// Create/Invite user (Admin only) - Creates user with assigned role
 exports.inviteUser = async (req, res) => {
-    const { email, role } = req.body;
+    const { email, role, username } = req.body;
 
     const validRoles = ['admin', 'store_manager', 'inventory_analyst', 'staff'];
 
     if (!validRoles.includes(role)) {
         return res.status(400).json({ msg: 'Invalid role' });
+    }
+
+    if (!email) {
+        return res.status(400).json({ msg: 'Email is required' });
     }
 
     try {
@@ -83,17 +92,16 @@ exports.inviteUser = async (req, res) => {
             return res.status(400).json({ msg: 'User with this email already exists' });
         }
 
-        // In a real application, you would:
-        // 1. Create an invitation token
-        // 2. Store it in a database table with expiration
-        // 3. Send an email with the invitation link
-        // For now, we'll just return a success message
+        // Create the user with the assigned role
+        // Password is null because they will login via Google OAuth
+        const newUser = await pool.query(
+            'INSERT INTO users (username, email, role, password) VALUES ($1, $2, $3, NULL) RETURNING id, username, email, role, created_at',
+            [username || email.split('@')[0], email, role]
+        );
 
-        res.json({
-            msg: 'Invitation sent successfully',
-            email,
-            role,
-            // In production, include invitation link
+        res.status(201).json({
+            msg: 'User created successfully. They can now log in with Google.',
+            user: newUser.rows[0]
         });
     } catch (err) {
         console.error(err.message);

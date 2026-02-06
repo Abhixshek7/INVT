@@ -48,6 +48,7 @@ import {
   IconTrash,
   IconSearch,
 } from "@tabler/icons-react";
+import { toast } from "sonner";
 
 // Mock data for users
 const mockUsers = [
@@ -99,7 +100,11 @@ function UserManagement() {
 
       if (response.ok) {
         const data = await response.json();
-        setUsers(data);
+        // Filter out users with 'user' role or no role - only show users with assigned roles
+        const validUsers = data.filter((user: any) =>
+          user.role && user.role !== 'user'
+        );
+        setUsers(validUsers);
       } else {
         console.error("Failed to fetch users");
       }
@@ -121,6 +126,11 @@ function UserManagement() {
   );
 
   const handleSendInvitation = async () => {
+    if (!inviteEmail) {
+      toast.error("Email is required");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:5000/api/users/invite", {
@@ -132,17 +142,27 @@ function UserManagement() {
         body: JSON.stringify({ email: inviteEmail, role: inviteRole }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        console.log("Invitation sent successfully");
+        toast.success("User created successfully", {
+          description: `${inviteEmail} has been added with ${inviteRole} role.`,
+        });
         setInviteDialogOpen(false);
         setInviteEmail("");
         setInviteRole("store_manager");
+        // Refresh user list
+        fetchUsers();
       } else {
-        const error = await response.json();
-        console.error("Failed to send invitation:", error.msg);
+        toast.error("Failed to create user", {
+          description: data.msg || "An error occurred",
+        });
       }
     } catch (error) {
-      console.error("Error sending invitation:", error);
+      console.error("Error creating user:", error);
+      toast.error("Failed to create user", {
+        description: "An error occurred. Please try again.",
+      });
     }
   };
 
@@ -158,23 +178,31 @@ function UserManagement() {
         body: JSON.stringify({ role: newRole }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         // Update local state
         setUsers(users.map(user =>
           user.id === userId ? { ...user, role: newRole } : user
         ));
-        console.log("Role updated successfully");
+        toast.success("Role updated successfully");
       } else {
-        const error = await response.json();
-        console.error("Failed to update role:", error.msg);
+        toast.error("Failed to update role", {
+          description: data.msg || "An error occurred",
+        });
       }
     } catch (error) {
       console.error("Error updating role:", error);
+      toast.error("Failed to update role", {
+        description: "An error occurred. Please try again.",
+      });
     }
   };
 
   const handleDeleteUser = async (userId: number) => {
-    if (!confirm("Are you sure you want to delete this user?")) {
+    const userToDelete = users.find(u => u.id === userId);
+
+    if (!confirm(`Are you sure you want to delete ${userToDelete?.email}?`)) {
       return;
     }
 
@@ -187,15 +215,21 @@ function UserManagement() {
         },
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         setUsers(users.filter(user => user.id !== userId));
-        console.log("User deleted successfully");
+        toast.success("User deleted successfully");
       } else {
-        const error = await response.json();
-        console.error("Failed to delete user:", error.msg);
+        toast.error("Failed to delete user", {
+          description: data.msg || "An error occurred",
+        });
       }
     } catch (error) {
       console.error("Error deleting user:", error);
+      toast.error("Failed to delete user", {
+        description: "An error occurred. Please try again.",
+      });
     }
   };
 

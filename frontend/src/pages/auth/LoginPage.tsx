@@ -43,6 +43,14 @@ export default function LoginPage() {
       return;
     }
 
+    if (error === "unauthorized") {
+      toast.error("Unauthorized Access", {
+        description: "Your email is not authorized. Please contact an administrator to get access.",
+      });
+      navigate("/login", { replace: true });
+      return;
+    }
+
     if (token) {
       // Fetch user data with this token
       const fetchUserData = async () => {
