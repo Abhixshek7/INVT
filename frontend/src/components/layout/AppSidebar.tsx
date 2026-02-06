@@ -94,7 +94,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="custom-scrollbar">
         {/* Main Navigation */}
         <SidebarGroup>
           <SidebarGroupLabel>MENU</SidebarGroupLabel>
