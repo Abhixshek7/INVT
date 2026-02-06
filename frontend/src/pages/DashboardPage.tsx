@@ -7,7 +7,7 @@ export default function DashboardPage() {
   return (
     <DashboardLayout title="Dashboard">
       <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-bold tracking-tight">
+        <h1 className="text-2xl font-bold">
         Dashboard
         </h1>
         {/* Stats Cards */}

@@ -7,7 +7,7 @@ export default function AnalyticsPage() {
     <DashboardLayout title="Analytics">
       <div className="flex flex-col gap-6">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Analytics Overview</h2>
+          <h2 className="text-2xl font-bold">Analytics Overview</h2>
           {/* <p className="text-muted-foreground">
             Inventory performance metrics and insights
           </p> */}
