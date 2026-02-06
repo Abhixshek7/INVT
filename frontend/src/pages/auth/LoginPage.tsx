@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { IconPackage, IconEye, IconEyeOff, IconBrandGoogle } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,61 +12,105 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
-
-const roles = [
-  { value: "store_manager", label: "Store Manager" },
-  { value: "analyst", label: "Inventory Analyst" },
-  { value: "warehouse", label: "Warehouse Staff" },
-  { value: "admin", label: "Admin / HQ" },
-];
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { login, user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    role: "",
   });
 
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:5000/api/auth/google";
   };
 
-  // Check for token in URL on load
+  // Check for token or error in URL on load
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+    const token = searchParams.get("token");
+    const error = searchParams.get("error");
+
+    if (error === "no_role") {
+      toast.error("Access Denied", {
+        description: "No role has been assigned to your account. Please contact an administrator.",
+      });
+      navigate("/login", { replace: true });
+      return;
+    }
+
     if (token) {
-      localStorage.setItem("token", token);
-      toast.success("Login successful via Google!");
+      // Fetch user data with this token
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch("http://localhost:5000/api/auth/me", {
+            headers: {
+              "x-auth-token": token,
+            },
+          });
+
+          if (response.ok) {
+            const userData = await response.json();
+            login(token, userData);
+          } else {
+            toast.error("Authentication failed");
+            navigate("/login", { replace: true });
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          toast.error("Authentication failed");
+          navigate("/login", { replace: true });
+        }
+      };
+
+      fetchUserData();
+    }
+  }, [searchParams, navigate, login]);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user && user.role && user.role !== 'user') {
       navigate("/dashboard");
     }
-  }, [navigate]);
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate login
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
 
-    toast.success("Login successful!", {
-      description: `Welcome back! Redirecting to ${roles.find((r) => r.value === formData.role)?.label || "Dashboard"
-        }...`,
-    });
+      const data = await response.json();
 
-    setIsLoading(false);
-    navigate("/dashboard");
+      if (response.ok) {
+        login(data.token, data.user);
+      } else {
+        toast.error("Login Failed", {
+          description: data.msg || "Invalid credentials",
+        });
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Login Failed", {
+        description: "An error occurred. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -93,7 +137,7 @@ export default function LoginPage() {
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
             <CardDescription>
-              Enter your credentials 
+              Enter your credentials
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
@@ -146,29 +190,6 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Role Select */}
-              <div className="space-y-2">
-                <Label htmlFor="role">Select Role</Label>
-                <Select
-                  value={formData.role}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, role: value })
-                  }
-                  required
-                >
-                  <SelectTrigger id="role" className="h-11">
-                    <SelectValue placeholder="Choose your role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {roles.map((role) => (
-                      <SelectItem key={role.value} value={role.value}>
-                        {role.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
               {/* Forgot Password Link */}
               <div className="flex justify-end">
                 <Link
@@ -202,7 +223,7 @@ export default function LoginPage() {
 
               <Button
                 type="button"
-               
+
                 className="w-full h-11"
                 onClick={handleGoogleLogin}
               >
