@@ -10,6 +10,7 @@ import {
   IconBell,
   IconHelp,
   IconAlertTriangle,
+  IconUserShield,
   IconReportAnalytics,
   IconBuildingWarehouse,
   IconRefresh,
@@ -54,6 +55,10 @@ const navSupplyChain = [
 const navForecasting = [
   { title: "Demand Forecast", url: "/forecast", icon: IconReportAnalytics },
   { title: "Reorder Suggestions", url: "/reorder", icon: IconRefresh },
+];
+
+const navAdmin = [
+  { title: "Admin Access", url: "/admin", icon: IconUserShield },
 ];
 
 const navGeneral = [
@@ -142,6 +147,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <SidebarMenu>
               {navForecasting.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActive(item.url)}
+                    tooltip={item.title}
+                  >
+                    <NavLink to={item.url}>
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Admin */}
+        <SidebarGroup>
+          <SidebarGroupLabel>ADMIN</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navAdmin.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
