@@ -20,6 +20,7 @@ import NotificationsPage from "./pages/NotificationsPage";
 import AdminPage from "./pages/AdminPage";
 
 import NotFound from "./pages/NotFound";
+import NotAuthorizedPage from "./pages/NotAuthorizedPage";
 
 const queryClient = new QueryClient();
 
@@ -162,6 +163,9 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+
+        {/* Not Authorized */}
+        <Route path="/not-authorized" element={<NotAuthorizedPage />} />
 
         {/* Root redirect */}
         <Route path="/" element={<Navigate to="/login" replace />} />
