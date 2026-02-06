@@ -30,7 +30,7 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 router.get('/google/callback',
     passport.authenticate('google', {
         session: false,
-        failureRedirect: `${process.env.FRONTEND_URL}/login?error=unauthorized`
+        failureRedirect: `${process.env.FRONTEND_URL}/not-authorized`
     }),
     authController.googleCallback
 );

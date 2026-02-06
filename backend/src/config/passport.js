@@ -33,10 +33,8 @@ const strategy = new GoogleStrategy({
             }
 
             // User does not exist - reject login
-            // Return error to prevent unauthorized access
-            const error = new Error('UNAUTHORIZED_USER');
-            error.message = 'Your email is not authorized. Please contact an administrator to get access.';
-            return cb(error, null);
+            // Return null, false to indicate authentication failure (triggers failureRedirect)
+            return cb(null, false, { message: 'Your email is not authorized.' });
 
         } catch (err) {
             return cb(err, null);

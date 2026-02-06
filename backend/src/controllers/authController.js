@@ -93,7 +93,7 @@ exports.googleCallback = (req, res) => {
 
     // Check if user has a role assigned
     if (!user.role || user.role === 'user') {
-        return res.redirect(`${process.env.FRONTEND_URL}/login?error=no_role`);
+        return res.redirect(`${process.env.FRONTEND_URL}/not-authorized`);
     }
 
     const token = generateToken(user);
