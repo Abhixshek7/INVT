@@ -174,7 +174,7 @@ export default function LowStockPage() {
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
               <IconAlertTriangle className="size-6 text-warning" />
               Low Stock Alerts
             </h2>
