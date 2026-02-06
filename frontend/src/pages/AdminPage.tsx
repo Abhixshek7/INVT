@@ -87,9 +87,7 @@ function UserManagement() {
               <IconUsers className="size-5" />
               User Management
             </CardTitle>
-            <CardDescription>
-              Add teammates to collaborate on projects together. Control permissions and manage access levels.
-            </CardDescription>
+           
           </div>
           <Button className="gap-2">
             <IconPlus className="size-4" />
@@ -173,9 +171,6 @@ function RoleManagement() {
               <IconShield className="size-5" />
               Role & Permission Management
             </CardTitle>
-            <CardDescription>
-              Define roles and their associated permissions for fine-grained access control.
-            </CardDescription>
           </div>
           <Button className="gap-2">
             <IconPlus className="size-4" />
@@ -243,9 +238,6 @@ function StoreManagement() {
               <IconBuildingStore className="size-5" />
               Store Management
             </CardTitle>
-            <CardDescription>
-              Manage your retail locations, assign managers, and track store performance.
-            </CardDescription>
           </div>
           <Button className="gap-2">
             <IconPlus className="size-4" />
@@ -315,9 +307,7 @@ function SupplierManagement() {
               <IconTruckDelivery className="size-5" />
               Supplier Management
             </CardTitle>
-            <CardDescription>
-              Manage your supplier relationships, contacts, and procurement details.
-            </CardDescription>
+  
           </div>
           <Button className="gap-2">
             <IconPlus className="size-4" />
@@ -384,10 +374,7 @@ export default function AdminPage() {
     <DashboardLayout title="Admin Access">
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Admin Access</h1>
-          <p className="text-muted-foreground">
-            Manage users, roles, stores, and suppliers from one central location.
-          </p>
+          <h1 className="text-2xl font-bold">Admin Access</h1>
         </div>
 
         <Tabs defaultValue="users" className="w-full">
