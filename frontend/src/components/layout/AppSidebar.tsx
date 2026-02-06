@@ -43,6 +43,7 @@ const navMain = [
   { title: "Inventory", url: "/inventory", icon: IconPackage },
   { title: "Low Stock", url: "/low-stock", icon: IconAlertTriangle },
   { title: "Analytics", url: "/analytics", icon: IconChartBar },
+  { title: "Notifications", url: "/notifications", icon: IconBell }
 ];
 
 const navSupplyChain = [
@@ -62,7 +63,6 @@ const navAdmin = [
 ];
 
 const navGeneral = [
-  { title: "Notifications", url: "/notifications", icon: IconBell },
   { title: "Settings", url: "/settings", icon: IconSettings },
   { title: "Help", url: "/help", icon: IconHelp },
 ];
