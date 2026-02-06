@@ -17,6 +17,7 @@ import InventoryPage from "./pages/InventoryPage";
 import LowStockPage from "./pages/LowStockPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import AdminPage from "./pages/AdminPage";
 
 import NotFound from "./pages/NotFound";
 
@@ -142,6 +143,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPage />
             </ProtectedRoute>
           }
         />
