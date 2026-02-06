@@ -8,9 +8,9 @@ export default function AnalyticsPage() {
       <div className="flex flex-col gap-6">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Analytics Overview</h2>
-          <p className="text-muted-foreground">
+          {/* <p className="text-muted-foreground">
             Inventory performance metrics and insights
-          </p>
+          </p> */}
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

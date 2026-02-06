@@ -5,8 +5,11 @@ import { InventoryAlerts } from "@/components/dashboard/InventoryAlerts";
 
 export default function DashboardPage() {
   return (
-    <DashboardLayout title="Store Dashboard">
+    <DashboardLayout title="Dashboard">
       <div className="flex flex-col gap-6">
+        <h1 className="text-2xl font-bold tracking-tight">
+        Dashboard
+        </h1>
         {/* Stats Cards */}
         <SectionCards />
 
