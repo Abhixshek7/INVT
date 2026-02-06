@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -19,6 +20,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -41,10 +51,10 @@ import {
 
 // Mock data for users
 const mockUsers = [
-  { id: 1, name: "Sofia Martinez", email: "sofia.m@example.com", role: "Owner", avatar: "" },
-  { id: 2, name: "Alex Chen", email: "alex.c@example.com", role: "Editor", avatar: "" },
-  { id: 3, name: "Jordan Blake", email: "jordan.b@example.com", role: "Viewer", avatar: "" },
-  { id: 4, name: "Morgan Reid", email: "morgan.r@example.com", role: "Editor", avatar: "" },
+  { id: 1, name: "Sofia Martinez", email: "sofia.m@example.com", role: "store_manager", avatar: "" },
+  { id: 2, name: "Alex Chen", email: "alex.c@example.com", role: "inventory_analyst", avatar: "" },
+  { id: 3, name: "Jordan Blake", email: "jordan.b@example.com", role: "staff", avatar: "" },
+  { id: 4, name: "Morgan Reid", email: "morgan.r@example.com", role: "staff", avatar: "" },
 ];
 
 // Mock data for roles
@@ -71,12 +81,23 @@ const mockSuppliers = [
 
 function UserManagement() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState("editor");
 
   const filteredUsers = mockUsers.filter(
     (user) =>
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleSendInvitation = () => {
+    // TODO: Implement invitation logic
+    console.log("Sending invitation to:", inviteEmail, "with role:", inviteRole);
+    setInviteDialogOpen(false);
+    setInviteEmail("");
+    setInviteRole("editor");
+  };
 
   return (
     <Card className="overflow-hidden">
@@ -89,10 +110,57 @@ function UserManagement() {
             </CardTitle>
            
           </div>
-          <Button className="gap-2">
-            <IconPlus className="size-4" />
-            Invite Member
-          </Button>
+          <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="gap-2">
+                <IconPlus className="size-4" />
+                Invite Member
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Invite Team Member</DialogTitle>
+                <DialogDescription>
+                  Send an invitation to add a new member to your team.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@yourcompany.com"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="role">Select role</Label>
+                  <Select value={inviteRole} onValueChange={setInviteRole}>
+                    <SelectTrigger id="role" className="w-full">
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="store_manager">Store Manager</SelectItem>
+                      <SelectItem value="inventory_analyst">Inventory Analyst</SelectItem>
+                      <SelectItem value="staff">Staff</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  type="submit"
+                  onClick={handleSendInvitation}
+                  disabled={!inviteEmail}
+                  className="w-full sm:w-auto"
+                >
+                  Send Invitation
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </CardHeader>
       <CardContent>
@@ -123,16 +191,16 @@ function UserManagement() {
                   <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+             <div className="flex items-center gap-2">
                 <Select defaultValue={user.role.toLowerCase()}>
-                  <SelectTrigger className="w-24">
+                  <SelectTrigger className="w-50">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="owner">Owner</SelectItem>
+                    <SelectItem value="store_manager">Store manager</SelectItem>
+                    <SelectItem value="inventory_analyst">Inventory Analyst</SelectItem>
+                    <SelectItem value="staff">Staff</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="editor">Editor</SelectItem>
-                    <SelectItem value="viewer">Viewer</SelectItem>
                   </SelectContent>
                 </Select>
                 <DropdownMenu>
@@ -153,6 +221,7 @@ function UserManagement() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
+
             </li>
           ))}
         </ul>
@@ -417,3 +486,4 @@ export default function AdminPage() {
     </DashboardLayout>
   );
 }
+
