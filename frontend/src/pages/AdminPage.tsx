@@ -51,10 +51,10 @@ import {
 
 // Mock data for users
 const mockUsers = [
-  { id: 1, name: "Sofia Martinez", email: "sofia.m@example.com", role: "Owner", avatar: "" },
-  { id: 2, name: "Alex Chen", email: "alex.c@example.com", role: "Editor", avatar: "" },
-  { id: 3, name: "Jordan Blake", email: "jordan.b@example.com", role: "Viewer", avatar: "" },
-  { id: 4, name: "Morgan Reid", email: "morgan.r@example.com", role: "Editor", avatar: "" },
+  { id: 1, name: "Sofia Martinez", email: "sofia.m@example.com", role: "store_manager", avatar: "" },
+  { id: 2, name: "Alex Chen", email: "alex.c@example.com", role: "inventory_analyst", avatar: "" },
+  { id: 3, name: "Jordan Blake", email: "jordan.b@example.com", role: "staff", avatar: "" },
+  { id: 4, name: "Morgan Reid", email: "morgan.r@example.com", role: "staff", avatar: "" },
 ];
 
 // Mock data for roles
@@ -142,9 +142,9 @@ function UserManagement() {
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="owner">Owner</SelectItem>
-                      <SelectItem value="editor">Editor</SelectItem>
-                      <SelectItem value="viewer">Viewer</SelectItem>
+                      <SelectItem value="store_manager">Store Manager</SelectItem>
+                      <SelectItem value="inventory_analyst">Inventory Analyst</SelectItem>
+                      <SelectItem value="staff">Staff</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -191,16 +191,16 @@ function UserManagement() {
                   <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+             <div className="flex items-center gap-2">
                 <Select defaultValue={user.role.toLowerCase()}>
-                  <SelectTrigger className="w-24">
+                  <SelectTrigger className="w-50">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="owner">Owner</SelectItem>
+                    <SelectItem value="store_manager">Store manager</SelectItem>
+                    <SelectItem value="inventory_analyst">Inventory Analyst</SelectItem>
+                    <SelectItem value="staff">Staff</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
-                    <SelectItem value="editor">Editor</SelectItem>
-                    <SelectItem value="viewer">Viewer</SelectItem>
                   </SelectContent>
                 </Select>
                 <DropdownMenu>
@@ -221,6 +221,7 @@ function UserManagement() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
+
             </li>
           ))}
         </ul>
@@ -485,3 +486,4 @@ export default function AdminPage() {
     </DashboardLayout>
   );
 }
+
