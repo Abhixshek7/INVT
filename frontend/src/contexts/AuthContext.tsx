@@ -61,8 +61,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const login = (token: string, userData: User) => {
         localStorage.setItem("token", token);
         setUser(userData);
-        toast.success(`Welcome back, ${userData.username}!`);
-        navigate("/dashboard");
+        toast.success(`Welcome back, ${userData.username || userData.email}!`);
+
+        // Role-based routing
+        switch (userData.role) {
+            case 'admin':
+                navigate("/admin");
+                break;
+            case 'store_manager':
+                navigate("/dashboard");
+                break;
+            case 'inventory_analyst':
+                navigate("/analytics");
+                break;
+            case 'staff':
+                navigate("/warehouse");
+                break;
+            default:
+                navigate("/dashboard");
+        }
     };
 
     const logout = () => {

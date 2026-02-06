@@ -58,6 +58,13 @@ exports.login = async (req, res) => {
 
         const user = userResult.rows[0];
 
+        // Check if user has a role assigned
+        if (!user.role || user.role === 'user') {
+            return res.status(403).json({
+                msg: 'Access denied. No role has been assigned to your account. Please contact an administrator.'
+            });
+        }
+
         // Check password (only if they have one - google users might not)
         if (!user.password) {
             return res.status(400).json({ msg: 'Please log in with Google' });
@@ -71,7 +78,7 @@ exports.login = async (req, res) => {
 
         // Return token
         const token = generateToken(user);
-        res.json({ token, user: { id: user.id, username: user.username, role: user.role } });
+        res.json({ token, user: { id: user.id, username: user.username, email: user.email, role: user.role, avatar_url: user.avatar_url } });
 
     } catch (err) {
         console.error(err.message);
@@ -82,7 +89,14 @@ exports.login = async (req, res) => {
 // Google Callback Handler
 exports.googleCallback = (req, res) => {
     // req.user is set by passport
-    const token = generateToken(req.user);
+    const user = req.user;
+
+    // Check if user has a role assigned
+    if (!user.role || user.role === 'user') {
+        return res.redirect(`${process.env.FRONTEND_URL}/login?error=no_role`);
+    }
+
+    const token = generateToken(user);
 
     // Redirect to frontend with token
     // For this demo, we'll implement a query param redirect

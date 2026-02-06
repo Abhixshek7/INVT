@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -48,6 +48,7 @@ import {
   IconTrash,
   IconSearch,
 } from "@tabler/icons-react";
+import { toast } from "sonner";
 
 // Mock data for users
 const mockUsers = [
@@ -83,21 +84,158 @@ function UserManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState("editor");
+  const [inviteRole, setInviteRole] = useState("store_manager");
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredUsers = mockUsers.filter(
+  // Fetch users from backend
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5000/api/users", {
+        headers: {
+          "x-auth-token": token || "",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Filter out users with 'user' role or no role - only show users with assigned roles
+        const validUsers = data.filter((user: any) =>
+          user.role && user.role !== 'user'
+        );
+        setUsers(validUsers);
+      } else {
+        console.error("Failed to fetch users");
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const filteredUsers = users.filter(
     (user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleSendInvitation = () => {
-    // TODO: Implement invitation logic
-    console.log("Sending invitation to:", inviteEmail, "with role:", inviteRole);
-    setInviteDialogOpen(false);
-    setInviteEmail("");
-    setInviteRole("editor");
+  const handleSendInvitation = async () => {
+    if (!inviteEmail) {
+      toast.error("Email is required");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5000/api/users/invite", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token || "",
+        },
+        body: JSON.stringify({ email: inviteEmail, role: inviteRole }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("User created successfully", {
+          description: `${inviteEmail} has been added with ${inviteRole} role.`,
+        });
+        setInviteDialogOpen(false);
+        setInviteEmail("");
+        setInviteRole("store_manager");
+        // Refresh user list
+        fetchUsers();
+      } else {
+        toast.error("Failed to create user", {
+          description: data.msg || "An error occurred",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating user:", error);
+      toast.error("Failed to create user", {
+        description: "An error occurred. Please try again.",
+      });
+    }
   };
+
+  const handleRoleChange = async (userId: number, newRole: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5000/api/users/${userId}/role`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token || "",
+        },
+        body: JSON.stringify({ role: newRole }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Update local state
+        setUsers(users.map(user =>
+          user.id === userId ? { ...user, role: newRole } : user
+        ));
+        toast.success("Role updated successfully");
+      } else {
+        toast.error("Failed to update role", {
+          description: data.msg || "An error occurred",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating role:", error);
+      toast.error("Failed to update role", {
+        description: "An error occurred. Please try again.",
+      });
+    }
+  };
+
+  const handleDeleteUser = async (userId: number) => {
+    const userToDelete = users.find(u => u.id === userId);
+
+    if (!confirm(`Are you sure you want to delete ${userToDelete?.email}?`)) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "x-auth-token": token || "",
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUsers(users.filter(user => user.id !== userId));
+        toast.success("User deleted successfully");
+      } else {
+        toast.error("Failed to delete user", {
+          description: data.msg || "An error occurred",
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error("Failed to delete user", {
+        description: "An error occurred. Please try again.",
+      });
+    }
+  };
+
+  if (loading) {
+    return <div>Loading users...</div>;
+  }
 
   return (
     <Card className="overflow-hidden">
@@ -108,7 +246,6 @@ function UserManagement() {
               <IconUsers className="size-5" />
               User Management
             </CardTitle>
-           
           </div>
           <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
             <DialogTrigger asChild>
@@ -142,9 +279,10 @@ function UserManagement() {
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="admin">Admin</SelectItem>
                       <SelectItem value="store_manager">Store Manager</SelectItem>
                       <SelectItem value="inventory_analyst">Inventory Analyst</SelectItem>
-                      <SelectItem value="staff">Staff</SelectItem>
+                      <SelectItem value="staff">Warehouse Staff</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -183,24 +321,27 @@ function UserManagement() {
             <li key={user.id} className="flex items-center justify-between gap-4 py-4">
               <div className="flex items-center gap-3 min-w-0">
                 <Avatar>
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                  <AvatarImage src={user.avatar_url} alt={user.username || user.email} />
+                  <AvatarFallback>{(user.username || user.email).charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
-                  <p className="font-medium truncate">{user.name}</p>
+                  <p className="font-medium truncate">{user.username || user.email}</p>
                   <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                 </div>
               </div>
-             <div className="flex items-center gap-2">
-                <Select defaultValue={user.role.toLowerCase()}>
+              <div className="flex items-center gap-2">
+                <Select
+                  defaultValue={user.role}
+                  onValueChange={(value) => handleRoleChange(user.id, value)}
+                >
                   <SelectTrigger className="w-50">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="store_manager">Store manager</SelectItem>
-                    <SelectItem value="inventory_analyst">Inventory Analyst</SelectItem>
-                    <SelectItem value="staff">Staff</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="store_manager">Store Manager</SelectItem>
+                    <SelectItem value="inventory_analyst">Inventory Analyst</SelectItem>
+                    <SelectItem value="staff">Warehouse Staff</SelectItem>
                   </SelectContent>
                 </Select>
                 <DropdownMenu>
@@ -210,18 +351,13 @@ function UserManagement() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <IconEdit className="size-4 mr-2" />
-                      Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-destructive">
+                    <DropdownMenuItem onClick={() => handleDeleteUser(user.id)} className="text-destructive">
                       <IconTrash className="size-4 mr-2" />
                       Remove
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-
             </li>
           ))}
         </ul>
@@ -376,7 +512,7 @@ function SupplierManagement() {
               <IconTruckDelivery className="size-5" />
               Supplier Management
             </CardTitle>
-  
+
           </div>
           <Button className="gap-2">
             <IconPlus className="size-4" />
