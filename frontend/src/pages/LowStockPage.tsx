@@ -178,9 +178,9 @@ export default function LowStockPage() {
               <IconAlertTriangle className="size-6 text-warning" />
               Low Stock Alerts
             </h2>
-            <p className="text-muted-foreground">
+            {/* <p className="text-muted-foreground">
               {lowStockItems.length} items below minimum threshold
-            </p>
+            </p> */}
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm">

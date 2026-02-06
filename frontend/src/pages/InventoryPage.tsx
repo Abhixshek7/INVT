@@ -203,12 +203,10 @@ export default function InventoryPage() {
         {/* Header Actions */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">
+            <h1 className="text-2xl font-bold tracking-tight">
               Inventory Management
-            </h2>
-            <p className="text-muted-foreground">
-              View and manage all products across your store
-            </p>
+            </h1>
+  
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm">
