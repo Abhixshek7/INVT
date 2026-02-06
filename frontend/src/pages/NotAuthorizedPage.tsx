@@ -11,8 +11,8 @@ const NotAuthorizedPage = () => {
         <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
           <IconLock className="h-8 w-8 text-destructive" />
         </div>
-        <h1 className="mb-2 text-2xl font-bold text-foreground">Access Denied</h1>
-        <p className="mb-6 text-muted-foreground">
+        <h1 className="mb-2 text-5xl font-bold text-foreground">Access Denied</h1>
+        <p className="mb-6 text-1xl text-muted-foreground">
           You don't have permission to access this page. Please contact your administrator if you believe this is an error.
         </p>
         <Button onClick={() => navigate("/login")}>
