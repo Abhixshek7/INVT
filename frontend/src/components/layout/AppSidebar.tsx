@@ -77,21 +77,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <IconPackage className="size-4" />
-              </div>
-              {!collapsed && (
-                <span className="text-lg font-semibold">INVT</span>
-              )}
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center justify-between w-full px-2">
+          <div className="flex items-center gap-2">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <IconPackage className="size-4" />
+            </div>
+            {!collapsed && (
+              <span className="text-lg font-semibold">INVT</span>
+            )}
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+            className="size-8"
+          >
+            {collapsed ? (
+              <IconChevronsRight className="size-4" />
+            ) : (
+              <IconChevronsLeft className="size-4" />
+            )}
+          </Button>
+        </div>
       </SidebarHeader>
 
       <SidebarContent className="custom-scrollbar">
@@ -217,23 +224,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={toggleSidebar}
-          className="w-full justify-center"
-        >
-          {collapsed ? (
-            <IconChevronsRight className="size-4" />
-          ) : (
-            <>
-              <IconChevronsLeft className="size-4 mr-2" />
-              <span>Collapse</span>
-            </>
-          )}
-        </Button>
-      </SidebarFooter>
     </Sidebar>
   );
 }
