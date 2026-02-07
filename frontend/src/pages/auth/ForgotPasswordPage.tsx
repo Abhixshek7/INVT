@@ -122,7 +122,6 @@ export default function ForgotPasswordPage() {
               </CardContent>
               <CardFooter className="flex-col gap-4">
                 <Button
-                  variant="outline"
                   className="w-full h-11"
                   onClick={() => setIsSubmitted(false)}
                 >
@@ -130,7 +129,7 @@ export default function ForgotPasswordPage() {
                 </Button>
                 <Link
                   to="/login"
-                  className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  className="flex items-center justify-center gap-2 text-sm text-muted-foreground  hover:text-foreground transition-colors"
                 >
                   <IconArrowLeft className="size-4" />
                   Back to login
@@ -139,11 +138,6 @@ export default function ForgotPasswordPage() {
             </>
           )}
         </Card>
-
-        {/* Footer */}
-        <p className="text-center text-sm text-muted-foreground mt-8">
-          © 2024 InventoryPro. All rights reserved.
-        </p>
       </div>
     </div>
   );
