@@ -18,6 +18,7 @@ import LowStockPage from "./pages/LowStockPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import AdminPage from "./pages/AdminPage";
+import SettingsPage from "./pages/SettingsPage";
 
 import NotFound from "./pages/NotFound";
 import NotAuthorizedPage from "./pages/NotAuthorizedPage";
@@ -127,7 +128,7 @@ const AppRoutes = () => {
           path="/settings"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <SettingsPage />
             </ProtectedRoute>
           }
         />
