@@ -58,7 +58,7 @@ export default function ForgotPasswordPage() {
           {!isSubmitted ? (
             <>
               <CardHeader className="space-y-1 text-center">
-                <CardTitle className="text-2xl font-bold">
+                <CardTitle className="text-3xl">
                   Reset password
                 </CardTitle>
                 <CardDescription>
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
                     <Input
                       id="email"
                       type="email"
-                      placeholder="sarah.mitchell@retail.com"
+                      placeholder="abhishek@gmail.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
