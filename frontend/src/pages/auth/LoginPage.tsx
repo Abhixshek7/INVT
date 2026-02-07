@@ -123,7 +123,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center  p-4">
-      <div className="w-full max-w-md animate-fade-out">
+      <div className="w-full max-w-md animate-fade-in">
         {/* Logo */}
         <div className="flex items-center justify-center mb-4">
           <div className="flex items-center gap-3">
@@ -143,7 +143,7 @@ export default function LoginPage() {
 
         <Card className="shadow-xl border-border/50">
           <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+            <CardTitle className="text-4xl ">Welcome back</CardTitle>
             <CardDescription>
               Enter your credentials
             </CardDescription>
@@ -156,7 +156,7 @@ export default function LoginPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="sarah.mitchell@retail.com"
+                  placeholder="abhishek@gmail.com"
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
@@ -223,9 +223,9 @@ export default function LoginPage() {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or continue with
-                  </span>
+                   <p>
+                      Or continue with
+                    </p>  
                 </div>
               </div>
 
