@@ -5,7 +5,6 @@ import {
   IconPackage,
   IconChartBar,
   IconTruck,
-  IconUsers,
   IconSettings,
   IconBell,
   IconHelp,
@@ -15,10 +14,7 @@ import {
   IconBuildingWarehouse,
   IconRefresh,
   IconFileInvoice,
-  IconAdjustments,
   IconBox,
-  IconChevronsLeft,
-  IconChevronsRight,
   IconLogout,
 } from "@tabler/icons-react";
 
@@ -78,26 +74,38 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <div className="flex items-center justify-between w-full px-2">
-          <div className="flex items-center gap-2">
+          <button
+            onClick={collapsed ? toggleSidebar : undefined}
+            className={`flex items-center gap-2 ${collapsed ? 'cursor-pointer' : 'cursor-default'}`}
+          >
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <IconPackage className="size-4" />
             </div>
             {!collapsed && (
               <span className="text-lg font-semibold">INVT</span>
             )}
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleSidebar}
-            className="size-8"
-          >
-            {collapsed ? (
-              <IconChevronsRight className="size-4" />
-            ) : (
-              <IconChevronsLeft className="size-4" />
-            )}
-          </Button>
+          </button>
+          {!collapsed && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleSidebar}
+              className="size-7"
+              aria-label="Hide sidebar"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                className="size-4"
+              >
+                <path
+                  fill="currentColor"
+                  d="M19.25 7A2.25 2.25 0 0 0 17 4.75H7A2.25 2.25 0 0 0 4.75 7v10A2.25 2.25 0 0 0 7 19.25h10A2.25 2.25 0 0 0 19.25 17zm-12 9V8a.75.75 0 0 1 1.5 0v8a.75.75 0 0 1-1.5 0m13.5 1A3.75 3.75 0 0 1 17 20.75H7A3.75 3.75 0 0 1 3.25 17V7A3.75 3.75 0 0 1 7 3.25h10A3.75 3.75 0 0 1 20.75 7z"
+                />
+              </svg>
+            </Button>
+          )}
         </div>
       </SidebarHeader>
 
