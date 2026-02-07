@@ -78,8 +78,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             onClick={collapsed ? toggleSidebar : undefined}
             className={`flex items-center gap-2 ${collapsed ? 'cursor-pointer' : 'cursor-default'}`}
           >
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <IconPackage className="size-4" />
+            <div className="flex aspect-square size-6 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <IconPackage className="size-5" />
             </div>
             {!collapsed && (
               <span className="text-lg font-semibold">INVT</span>
