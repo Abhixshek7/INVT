@@ -1,6 +1,5 @@
 CREATE DATABASE invt_db;
 
-\c invt_db;
 
 CREATE TABLE inventory (
     id SERIAL PRIMARY KEY,
