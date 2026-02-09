@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -32,6 +31,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
 
 const inventoryData = [
   {
@@ -157,25 +162,25 @@ const categories = [
   "Meat",
 ];
 
-const statusConfig = {
+const statusConfig: Record<string, { label: string; variant: "destructive" | "default" | "secondary" | "outline"; progressClass: string }> = {
   critical: {
     label: "Critical",
-    variant: "destructive" as const,
+    variant: "destructive",
     progressClass: "[&>div]:bg-destructive",
   },
   low: {
     label: "Low",
-    variant: "outline" as const,
+    variant: "outline",
     progressClass: "[&>div]:bg-warning",
   },
   good: {
     label: "In Stock",
-    variant: "outline" as const,
+    variant: "outline",
     progressClass: "[&>div]:bg-success",
   },
   excess: {
     label: "Excess",
-    variant: "outline" as const,
+    variant: "outline",
     progressClass: "[&>div]:bg-info",
   },
 };
@@ -197,6 +202,8 @@ export default function InventoryPage() {
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
+  const activeFilterCount = (selectedCategory !== "All Categories" ? 1 : 0) + (selectedStatus !== "all" ? 1 : 0);
+
   return (
     <DashboardLayout title="Inventory">
       <div className="flex flex-col gap-6">
@@ -206,79 +213,108 @@ export default function InventoryPage() {
             <h1 className="text-2xl font-bold">
               Inventory Management
             </h1>
-  
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <IconDownload className="size-4 mr-2" />
-              Export
-            </Button>
-            <Button size="sm">
-              <IconPlus className="size-4 mr-2" />
-              Add Product
-            </Button>
           </div>
         </div>
 
-        {/* Filters */}
+        {/* Inventory Table */}
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Filters</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <div className="relative flex-1">
+          <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between space-y-0 pb-4">
+            <div className="shrink-0">
+              <CardTitle className="text-xl font-bold">Products</CardTitle>
+            </div>
+
+            <div className="flex-1 w-full sm:max-w-md sm:mx-4">
+              <div className="relative">
                 <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <Input
                   placeholder="Search by name or SKU..."
-                  className="pl-9"
+                  className="pl-9 w-full"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Select
-                value={selectedCategory}
-                onValueChange={setSelectedCategory}
-              >
-                <SelectTrigger className="w-full sm:w-48">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                <SelectTrigger className="w-full sm:w-40">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="critical">Critical</SelectItem>
-                  <SelectItem value="low">Low Stock</SelectItem>
-                  <SelectItem value="good">In Stock</SelectItem>
-                  <SelectItem value="excess">Excess</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline">
-                <IconFilter className="size-4 mr-2" />
-                More Filters
-              </Button>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Inventory Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Products</CardTitle>
-            <CardDescription>
-              Showing {filteredData.length} of {inventoryData.length} products
-            </CardDescription>
+            <div className="flex items-center gap-2 shrink-0">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2 border-dashed">
+                    <IconFilter className="size-4" />
+                    Filters
+                    {activeFilterCount > 0 && (
+                      <Badge variant="secondary" className="px-1 font-normal h-5">
+                        {activeFilterCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-4" align="end">
+                  <div className="grid gap-4">
+                    <div className="space-y-2">
+                      <h4 className="font-medium leading-none">Filter Options</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Refine your product list.
+                      </p>
+                    </div>
+                    <div className="grid gap-2">
+                      <div className="grid gap-2">
+                        <Label htmlFor="category">Category</Label>
+                        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                          <SelectTrigger id="category">
+                            <SelectValue placeholder="Category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((cat) => (
+                              <SelectItem key={cat} value={cat}>
+                                {cat}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="status">Status</Label>
+                        <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                          <SelectTrigger id="status">
+                            <SelectValue placeholder="Status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Status</SelectItem>
+                            <SelectItem value="critical">Critical</SelectItem>
+                            <SelectItem value="low">Low Stock</SelectItem>
+                            <SelectItem value="good">In Stock</SelectItem>
+                            <SelectItem value="excess">Excess</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    {(activeFilterCount > 0) && (
+                      <Button
+                        variant="ghost"
+                        className="justify-center text-primary w-full"
+                        onClick={() => {
+                          setSelectedCategory("All Categories");
+                          setSelectedStatus("all");
+                        }}
+                      >
+                        Clear filters
+                      </Button>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              <Button size="sm">
+                <IconDownload className="size-4 mr-2" />
+                Export
+              </Button>
+              {/* <Button size="sm">
+                <IconPlus className="size-4 mr-2" />
+                Add Product
+              </Button> */}
+            </div>
           </CardHeader>
+
           <CardContent>
             <div className="rounded-md border">
               <Table>

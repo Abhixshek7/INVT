@@ -70,9 +70,8 @@ export function TopBar() {
         <NavLink
           key={item.title}
           to={item.url}
-          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent ${
-            isActive(item.url) ? "bg-accent text-accent-foreground font-medium" : "text-muted-foreground"
-          }`}
+          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent ${isActive(item.url) ? "bg-accent text-accent-foreground font-medium" : "text-muted-foreground"
+            }`}
         >
           <item.icon className="size-4" />
           <span>{item.title}</span>
