@@ -175,23 +175,13 @@ export default function LowStockPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-2xl font-bold flex items-center gap-2">
-              <IconAlertTriangle className="size-6 text-warning" />
               Low Stock Alerts
             </h2>
             {/* <p className="text-muted-foreground">
               {lowStockItems.length} items below minimum threshold
             </p> */}
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <IconDownload className="size-4 mr-2" />
-              Export Report
-            </Button>
-            <Button size="sm" onClick={handleReorder}>
-              <IconRefresh className="size-4 mr-2" />
-              Reorder Selected ({selectedItems.length})
-            </Button>
-          </div>
+         
         </div>
 
         {/* Summary Cards */}
@@ -242,13 +232,31 @@ export default function LowStockPage() {
 
         {/* Low Stock Table */}
         <Card>
-          <CardHeader>
-            <CardTitle>Items Requiring Attention</CardTitle>
-            <CardDescription>
-              Select items and click "Reorder Selected" to create purchase
-              orders
-            </CardDescription>
-          </CardHeader>
+         <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+
+  {/* LEFT : Title + Description */}
+  <div>
+    <CardTitle>Items Requiring Attention</CardTitle>
+    <CardDescription>
+      Select items and click "Reorder Selected" to create purchase orders
+    </CardDescription>
+  </div>
+
+  {/* RIGHT : Buttons */}
+  <div className="flex gap-2 shrink-0">
+    <Button variant="outline" size="sm">
+      <IconDownload className="size-4 mr-2" />
+      Export Report
+    </Button>
+
+    <Button size="sm" onClick={handleReorder}>
+      <IconRefresh className="size-4 mr-2" />
+      Reorder Selected ({selectedItems.length})
+    </Button>
+  </div>
+
+</CardHeader>
+
           <CardContent>
             <div className="rounded-md border">
               <Table>
