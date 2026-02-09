@@ -85,6 +85,7 @@ export default function SettingsPage() {
                 <Button variant="link" className="text-destructive text-sm">
                   Remove photo
                 </Button>
+                
               </div>
 
               {/* Name Fields */}
@@ -139,6 +140,10 @@ export default function SettingsPage() {
                   </Button>
                 </div>
               </div>
+                <div className="flex gap-3 w-full justify-end">
+            <Button variant="outline">Cancel</Button>
+            <Button>Save Changes</Button>
+             </div>
             </CardContent>
           </Card>
 
@@ -200,6 +205,10 @@ export default function SettingsPage() {
                 />
               </div>
               <p className="text-sm text-muted-foreground">Notify on new/unfamiliar logins</p>
+              <div className="flex gap-3 w-full justify-end">
+            <Button variant="outline">Cancel</Button>
+            <Button>Save Changes</Button>
+             </div>
             </CardContent>
           </Card>
         </div>
@@ -308,6 +317,11 @@ export default function SettingsPage() {
                   </div>
                 )}
               </div>
+
+              <div className="flex gap-3 w-full justify-end">
+            <Button variant="outline">Cancel</Button>
+            <Button>Save Changes</Button>
+             </div>
             </CardContent>
           </Card>
 
@@ -397,21 +411,24 @@ export default function SettingsPage() {
                   View legal documents
                 </Button>
               </div>
+
+              <div className="flex gap-3 w-full justify-end">
+            <Button variant="outline">Cancel</Button>
+            <Button>Save Changes</Button>
+             </div>
             </CardContent>
           </Card>
         </div>
       </div>
 
-      {/* Footer Actions */}
+      {/* Footer Actions
       <div className="mt-6 flex items-center justify-between border-t pt-6">
-        <p className="text-sm text-muted-foreground">
-          Confirm to apply the new settings. Please review your information before submitting.
-        </p>
+       
         <div className="flex gap-3">
           <Button variant="outline">Cancel</Button>
           <Button>Save Changes</Button>
         </div>
-      </div>
+      </div> */}
     </DashboardLayout>
   );
 }
