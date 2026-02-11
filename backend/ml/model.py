@@ -7,6 +7,13 @@ import os
 from datetime import datetime, timedelta
 import logging
 from preprocessing import prepare_for_training
+import sys
+
+# Fix Windows console encoding for emoji support
+if sys.platform == 'win32':
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 # Setup logging
 logging.getLogger('prophet').setLevel(logging.WARNING)
@@ -119,7 +126,7 @@ class ForecastModel:
 
     def predict(self, days=30, include_history=False, future_promotions=None):
         """
-        Generates forecasts for the next 'days'.
+        Generates forecasts for the next 'days' with enhanced metrics.
         """
         if not self.is_trained or self.model is None:
             if not self.load_model():
@@ -142,7 +149,46 @@ class ForecastModel:
             last_history_date = self.model.history['ds'].max()
             result = result[result['ds'] > last_history_date]
 
-        return result.to_dict(orient='records')
+        # Enhanced: Add trend and additional metadata
+        if 'trend' in forecast.columns:
+            result = result.merge(forecast[['ds', 'trend']], on='ds', how='left')
+        
+        # Convert to list of dicts with proper serialization
+        predictions = []
+        for idx, row in result.iterrows():
+            pred_dict = {
+                'date': row['ds'].strftime('%Y-%m-%d'),  # Convert Timestamp to string
+                'predicted_quantity': round(float(row['yhat']), 2),
+                'lower_bound': round(float(row['yhat_lower']), 2),
+                'upper_bound': round(float(row['yhat_upper']), 2),
+                'confidence_interval': round(float(row['yhat_upper'] - row['yhat_lower']), 2)
+            }
+            
+            # Add trend if available
+            if 'trend' in row:
+                pred_dict['trend'] = round(float(row['trend']), 2)
+            
+            # Calculate percentage of uncertainty
+            if row['yhat'] > 0:
+                pred_dict['uncertainty_percentage'] = round(
+                    (float(row['yhat_upper'] - row['yhat_lower']) / float(row['yhat']) * 100), 2
+                )
+            
+            predictions.append(pred_dict)
+        
+        # Add summary statistics
+        summary = {
+            'total_predictions': len(predictions),
+            'average_predicted_quantity': round(float(result['yhat'].mean()), 2),
+            'min_predicted': round(float(result['yhat'].min()), 2),
+            'max_predicted': round(float(result['yhat'].max()), 2),
+            'total_forecasted_quantity': round(float(result['yhat'].sum()), 2)
+        }
+        
+        return {
+            'predictions': predictions,
+            'summary': summary
+        }
 
     def get_model_components(self, days=30):
         """

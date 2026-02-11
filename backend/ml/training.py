@@ -27,7 +27,7 @@ def train_model(csv_path: str = "data/train.csv", auto_tune: bool = False):
     Train the machine learning model using the singleton forecaster.
     Returns the evaluation metrics.
     """
-    logger.info("🚀 Starting Model Training Pipeline...")
+    logger.info("[*] Starting Model Training Pipeline...")
     
     # 1. Fetch Holidays from DB (if table exists)
     holidays_df = None
@@ -36,7 +36,7 @@ def train_model(csv_path: str = "data/train.csv", auto_tune: bool = False):
         try:
             # Check if holidays table exists first
             cur = conn.cursor()
-            cur.execute("SELECT output FROM pg_tables WHERE schemaname = 'public' AND tablename = 'holidays';")
+            cur.execute("SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename = 'holidays';")
             if cur.fetchone():
                 query = "SELECT date, description, transferred FROM holidays"
                 df_holidays_db = pd.read_sql_query(query, conn)
@@ -52,14 +52,14 @@ def train_model(csv_path: str = "data/train.csv", auto_tune: bool = False):
                             "upper_window": 1 if row['transferred'] else 0,
                         })
                     holidays_df = pd.DataFrame(data)
-                    logger.info(f"🎉 Loaded {len(holidays_df)} holidays from Database.")
+                    logger.info(f"[+] Loaded {len(holidays_df)} holidays from Database.")
             else:
-                logger.warning("⚠️ 'holidays' table not found in database. Skipping holiday loading.")
+                logger.warning("[!] 'holidays' table not found in database. Skipping holiday loading.")
             
             cur.close()
             conn.close()
         except Exception as e:
-            logger.warning(f"⚠️ Failed to load holidays from DB: {e}")
+            logger.warning(f"[!] Failed to load holidays from DB: {e}")
 
     # Train
     # Assuming CSV path is relative to backend root if running from there
@@ -69,7 +69,7 @@ def train_model(csv_path: str = "data/train.csv", auto_tune: bool = False):
     # Evaluate if trained successfully
     metrics = None
     if forecaster.is_trained:
-        logger.info("📊 Evaluating model performance...")
+        logger.info("[*] Evaluating model performance...")
         metrics = forecaster.evaluate()
         
     return metrics
