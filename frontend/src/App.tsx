@@ -16,6 +16,7 @@ import DashboardPage from "./pages/DashboardPage";
 import InventoryPage from "./pages/InventoryPage";
 import LowStockPage from "./pages/LowStockPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
+import ForecastPage from "./pages/ForecastPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import AdminPage from "./pages/AdminPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -104,7 +105,7 @@ const AppRoutes = () => {
           path="/forecast"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <ForecastPage />
             </ProtectedRoute>
           }
         />

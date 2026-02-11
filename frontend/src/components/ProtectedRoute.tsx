@@ -23,23 +23,6 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    // Check if user has no role assigned
-    if (!user.role || user.role === 'user') {
-        return (
-            <div className="flex h-screen w-full items-center justify-center flex-col gap-4 p-8">
-                <div className="text-center max-w-md">
-                    <h1 className="text-2xl font-bold mb-2">Access Pending</h1>
-                    <p className="text-muted-foreground mb-4">
-                        Your account does not have a role assigned yet. Please contact an administrator to get access.
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                        Email: {user.email}
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
     // Check role-based access
     if (allowedRoles && allowedRoles.length > 0) {
         if (!allowedRoles.includes(user.role)) {

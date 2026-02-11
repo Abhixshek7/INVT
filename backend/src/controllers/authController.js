@@ -58,13 +58,6 @@ exports.login = async (req, res) => {
 
         const user = userResult.rows[0];
 
-        // Check if user has a role assigned
-        if (!user.role || user.role === 'user') {
-            return res.status(403).json({
-                msg: 'Access denied. No role has been assigned to your account. Please contact an administrator.'
-            });
-        }
-
         // Check password (only if they have one - google users might not)
         if (!user.password) {
             return res.status(400).json({ msg: 'Please log in with Google' });
@@ -90,11 +83,6 @@ exports.login = async (req, res) => {
 exports.googleCallback = (req, res) => {
     // req.user is set by passport
     const user = req.user;
-
-    // Check if user has a role assigned
-    if (!user.role || user.role === 'user') {
-        return res.redirect(`${process.env.FRONTEND_URL}/not-authorized`);
-    }
 
     const token = generateToken(user);
 
