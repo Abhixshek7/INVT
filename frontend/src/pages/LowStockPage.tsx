@@ -26,116 +26,48 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
-const lowStockItems = [
-  {
-    id: 1,
-    sku: "SKU-001234",
-    name: "Organic Milk 1L",
-    category: "Dairy",
-    currentStock: 12,
-    threshold: 50,
-    maxStock: 200,
-    suggestedReorder: 150,
-    daysUntilStockout: 2,
-    supplier: "Farm Fresh Co.",
-    urgency: "critical",
-  },
-  {
-    id: 2,
-    sku: "SKU-002345",
-    name: "Whole Wheat Bread",
-    category: "Bakery",
-    currentStock: 18,
-    threshold: 40,
-    maxStock: 150,
-    suggestedReorder: 100,
-    daysUntilStockout: 3,
-    supplier: "Baker's Best",
-    urgency: "critical",
-  },
-  {
-    id: 3,
-    sku: "SKU-005678",
-    name: "Paper Towels",
-    category: "Household",
-    currentStock: 8,
-    threshold: 30,
-    maxStock: 100,
-    suggestedReorder: 80,
-    daysUntilStockout: 1,
-    supplier: "CleanSupply Inc.",
-    urgency: "critical",
-  },
-  {
-    id: 4,
-    sku: "SKU-004567",
-    name: "Bananas (bunch)",
-    category: "Produce",
-    currentStock: 42,
-    threshold: 80,
-    maxStock: 300,
-    suggestedReorder: 200,
-    daysUntilStockout: 5,
-    supplier: "Tropical Farms",
-    urgency: "low",
-  },
-  {
-    id: 5,
-    sku: "SKU-009012",
-    name: "Orange Juice 1L",
-    category: "Beverages",
-    currentStock: 34,
-    threshold: 50,
-    maxStock: 180,
-    suggestedReorder: 120,
-    daysUntilStockout: 4,
-    supplier: "Citrus Direct",
-    urgency: "low",
-  },
-  {
-    id: 6,
-    sku: "SKU-011234",
-    name: "Greek Yogurt 500g",
-    category: "Dairy",
-    currentStock: 22,
-    threshold: 45,
-    maxStock: 120,
-    suggestedReorder: 80,
-    daysUntilStockout: 3,
-    supplier: "Farm Fresh Co.",
-    urgency: "critical",
-  },
-  {
-    id: 7,
-    sku: "SKU-012345",
-    name: "Sliced Ham",
-    category: "Deli",
-    currentStock: 15,
-    threshold: 35,
-    maxStock: 80,
-    suggestedReorder: 50,
-    daysUntilStockout: 2,
-    supplier: "Premium Meats",
-    urgency: "critical",
-  },
-  {
-    id: 8,
-    sku: "SKU-013456",
-    name: "Butter 250g",
-    category: "Dairy",
-    currentStock: 28,
-    threshold: 40,
-    maxStock: 150,
-    suggestedReorder: 100,
-    daysUntilStockout: 4,
-    supplier: "Farm Fresh Co.",
-    urgency: "low",
-  },
-];
+// Helper to estimate days until stockout (mock logic for now)
+const estimateStockoutDays = (stock: number) => {
+  if (stock === 0) return 0;
+  const dailySales = Math.floor(Math.random() * 5) + 1; // Mock daily sales
+  return Math.floor(stock / dailySales);
+};
 
 export default function LowStockPage() {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+
+  const { data: inventoryData = [], isLoading } = useQuery({
+    queryKey: ["inventory"],
+    queryFn: async () => {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:5000/api/inventory", {
+        headers: {
+          "x-auth-token": token || "",
+        },
+      });
+      if (!res.ok) throw new Error("Failed to fetch inventory");
+      const data = await res.json();
+      return data;
+    },
+  });
+
+  const lowStockItems = inventoryData
+    .filter((item: any) => item.stock <= item.threshold)
+    .map((item: any) => ({
+      id: item.id,
+      sku: item.sku,
+      name: item.name,
+      category: item.category,
+      currentStock: item.stock,
+      threshold: item.threshold,
+      maxStock: item.max_stock,
+      suggestedReorder: item.max_stock - item.stock,
+      daysUntilStockout: estimateStockoutDays(item.stock),
+      supplier: item.supplier || "Unknown Supplier",
+      urgency: item.stock === 0 ? "critical" : item.stock < item.threshold / 2 ? "critical" : "low",
+    }));
 
   const criticalCount = lowStockItems.filter(
     (item) => item.urgency === "critical"
@@ -181,7 +113,7 @@ export default function LowStockPage() {
               {lowStockItems.length} items below minimum threshold
             </p> */}
           </div>
-         
+
         </div>
 
         {/* Summary Cards */}
@@ -232,30 +164,30 @@ export default function LowStockPage() {
 
         {/* Low Stock Table */}
         <Card>
-         <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-  {/* LEFT : Title + Description */}
-  <div>
-    <CardTitle>Items Requiring Attention</CardTitle>
-    <CardDescription>
-      Select items and click "Reorder Selected" to create purchase orders
-    </CardDescription>
-  </div>
+            {/* LEFT : Title + Description */}
+            <div>
+              <CardTitle>Items Requiring Attention</CardTitle>
+              <CardDescription>
+                Select items and click "Reorder Selected" to create purchase orders
+              </CardDescription>
+            </div>
 
-  {/* RIGHT : Buttons */}
-  <div className="flex gap-2 shrink-0">
-    <Button variant="outline" size="sm">
-      <IconDownload className="size-4 mr-2" />
-      Export Report
-    </Button>
+            {/* RIGHT : Buttons */}
+            <div className="flex gap-2 shrink-0">
+              <Button variant="outline" size="sm">
+                <IconDownload className="size-4 mr-2" />
+                Export Report
+              </Button>
 
-    <Button size="sm" onClick={handleReorder}>
-      <IconRefresh className="size-4 mr-2" />
-      Reorder Selected ({selectedItems.length})
-    </Button>
-  </div>
+              <Button size="sm" onClick={handleReorder}>
+                <IconRefresh className="size-4 mr-2" />
+                Reorder Selected ({selectedItems.length})
+              </Button>
+            </div>
 
-</CardHeader>
+          </CardHeader>
 
           <CardContent>
             <div className="rounded-md border">
@@ -322,11 +254,10 @@ export default function LowStockPage() {
                             </div>
                             <Progress
                               value={stockPercent}
-                              className={`h-2 ${
-                                item.urgency === "critical"
+                              className={`h-2 ${item.urgency === "critical"
                                   ? "[&>div]:bg-destructive"
                                   : "[&>div]:bg-warning"
-                              }`}
+                                }`}
                             />
                           </div>
                         </TableCell>

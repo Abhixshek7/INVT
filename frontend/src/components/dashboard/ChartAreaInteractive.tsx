@@ -23,6 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const chartData = [
   { date: "2024-01-01", sales: 42000, forecast: 40000 },
@@ -39,14 +41,11 @@ const chartData = [
   { date: "2024-03-18", sales: 75000, forecast: 73000 },
 ];
 
+
 const chartConfig = {
   sales: {
-    label: "Actual Sales",
+    label: "Sales",
     color: "hsl(var(--primary))",
-  },
-  forecast: {
-    label: "Forecast",
-    color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
 
@@ -56,14 +55,34 @@ export function ChartAreaInteractive() {
 
   React.useEffect(() => {
     if (isMobile) {
-      setTimeRange("30d");
+      setTimeRange("7d");
     }
   }, [isMobile]);
 
+  const { data: salesData, isLoading } = useQuery({
+    queryKey: ["sales-trend"],
+    queryFn: async () => {
+      const res = await fetch("http://localhost:5000/api/dashboard/sales-trend");
+      if (!res.ok) throw new Error("Failed to fetch sales trend");
+      const data = await res.json();
+      // Map API data to chart format
+      return data.map((item: any) => ({
+        date: new Date(item.date).toISOString().split('T')[0],
+        sales: parseFloat(item.revenue),
+        forecast: 0 // Optional: if we want to overlay forecast
+      }));
+    }
+  });
+
   const filteredData = React.useMemo(() => {
-    const daysToShow = timeRange === "90d" ? 12 : timeRange === "30d" ? 4 : 2;
-    return chartData.slice(-daysToShow);
-  }, [timeRange]);
+    if (!salesData) return [];
+    const daysToShow = timeRange === "90d" ? 90 : timeRange === "30d" ? 30 : 7;
+    return salesData.slice(-daysToShow);
+  }, [salesData, timeRange]);
+
+  if (isLoading) {
+    return <Skeleton className="h-[350px] w-full rounded-xl" />;
+  }
 
   return (
     <Card className="@container/card">

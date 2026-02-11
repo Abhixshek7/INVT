@@ -44,6 +44,15 @@ export default function AnalyticsPage() {
     retry: false,
   });
 
+  const { data: metricsData } = useQuery({
+    queryKey: ["analytics-metrics"],
+    queryFn: async () => {
+      const res = await fetch("http://localhost:5000/api/dashboard/analytics");
+      if (!res.ok) throw new Error("Failed to fetch metrics");
+      return res.json();
+    }
+  });
+
   const { mutate: trainModel } = useMutation({
     mutationFn: async () => {
       setIsTraining(true);
@@ -87,7 +96,7 @@ export default function AnalyticsPage() {
               <IconChartBar className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">8.4x</div>
+              <div className="text-2xl font-bold">{metricsData?.turnoverRatio || "0"}x</div>
               <p className="text-xs text-muted-foreground">+0.3 from last month</p>
             </CardContent>
           </Card>
@@ -97,7 +106,7 @@ export default function AnalyticsPage() {
               <IconTarget className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">96.8%</div>
+              <div className="text-2xl font-bold">{metricsData?.serviceLevel || "100"}%</div>
               <p className="text-xs text-muted-foreground">Target: 95%</p>
             </CardContent>
           </Card>
@@ -107,7 +116,7 @@ export default function AnalyticsPage() {
               <IconCalendar className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">12.3</div>
+              <div className="text-2xl font-bold">{metricsData?.avgDaysInStock || "0"}</div>
               <p className="text-xs text-muted-foreground">-1.2 from last month</p>
             </CardContent>
           </Card>
@@ -117,7 +126,7 @@ export default function AnalyticsPage() {
               <IconTrendingUp className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">89.2%</div>
+              <div className="text-2xl font-bold">{metricsData?.forecastAccuracy || "0"}%</div>
               <p className="text-xs text-muted-foreground">+2.1% from last month</p>
             </CardContent>
           </Card>

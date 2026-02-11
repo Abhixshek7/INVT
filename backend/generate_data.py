@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-def generate_csv(filename="data/train.csv", n_entries=1000):
+def generate_csv(filename="data/train.csv", n_entries=100000):
     print(f"Generating {n_entries} rows of dummy data...")
     
     # Start date from 2 years ago

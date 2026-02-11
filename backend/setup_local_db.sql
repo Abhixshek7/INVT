@@ -105,4 +105,4 @@ ON CONFLICT DO NOTHING;
 -- =================================================
 -- Database setup complete!
 -- =================================================
-SELECT 'Database INVT created successfully!' AS message;
+    SELECT 'Database INVT created successfully!' AS message;

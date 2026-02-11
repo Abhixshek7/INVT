@@ -16,6 +16,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const stats = [
   {
@@ -57,10 +59,68 @@ const stats = [
 ];
 
 export function SectionCards() {
+  const { data: statsData, isLoading } = useQuery({
+    queryKey: ["dashboard-stats"],
+    queryFn: async () => {
+      const res = await fetch("http://localhost:5000/api/dashboard/stats");
+      if (!res.ok) throw new Error("Failed to fetch stats");
+      return res.json();
+    }
+  });
+
+  const cards = [
+    {
+      title: "Total Inventory",
+      value: statsData?.totalItems || "0",
+      change: "+2.5%", // These would also ideally come from backend comparison
+      trend: "up",
+      description: "Across all categories",
+      footer: "Active items",
+      icon: IconPackage,
+    },
+    {
+      title: "Low Stock Items",
+      value: statsData?.lowStockCount || "0",
+      change: statsData?.lowStockCount > 0 ? "High" : "Low",
+      trend: statsData?.lowStockCount > 0 ? "down" : "up",
+      description: "Below threshold",
+      footer: "Immediate attention needed",
+      icon: IconAlertTriangle,
+    },
+    {
+      title: "Total Sales",
+      value: `$${parseFloat(statsData?.totalRevenue || 0).toLocaleString()}`,
+      change: "+12.3%",
+      trend: "up",
+      description: "All time revenue",
+      footer: "From sales data",
+      icon: IconShoppingCart,
+    },
+    {
+      title: "Inventory Value",
+      value: `$${parseFloat(statsData?.totalStockValue || 0).toLocaleString()}`,
+      change: "Stable",
+      trend: "up",
+      description: "Current stock value",
+      footer: "Estimated based on avg sales",
+      icon: IconTruck,
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <Skeleton key={i} className="h-[160px] w-full rounded-xl" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {stats.map((stat) => (
-        <Card key={stat.title}  className="@container/card">
+      {cards.map((stat) => (
+        <Card key={stat.title} className="@container/card">
           <CardHeader className="flex flex-row items-start justify-between pb-2">
             <div className="space-y-1">
               <CardDescription className="flex items-center gap-2">
