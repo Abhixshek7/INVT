@@ -38,129 +38,20 @@ import {
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 
-const inventoryData = [
-  {
-    id: 1,
-    sku: "SKU-001234",
-    name: "Organic Milk 1L",
-    category: "Dairy",
-    stock: 12,
-    threshold: 50,
-    maxStock: 200,
-    status: "critical",
-    lastUpdated: "2024-01-15",
-  },
-  {
-    id: 2,
-    sku: "SKU-002345",
-    name: "Whole Wheat Bread",
-    category: "Bakery",
-    stock: 18,
-    threshold: 40,
-    maxStock: 150,
-    status: "critical",
-    lastUpdated: "2024-01-15",
-  },
-  {
-    id: 3,
-    sku: "SKU-003456",
-    name: "Fresh Eggs (12pk)",
-    category: "Dairy",
-    stock: 85,
-    threshold: 60,
-    maxStock: 200,
-    status: "good",
-    lastUpdated: "2024-01-14",
-  },
-  {
-    id: 4,
-    sku: "SKU-004567",
-    name: "Bananas (bunch)",
-    category: "Produce",
-    stock: 42,
-    threshold: 80,
-    maxStock: 300,
-    status: "low",
-    lastUpdated: "2024-01-15",
-  },
-  {
-    id: 5,
-    sku: "SKU-005678",
-    name: "Paper Towels",
-    category: "Household",
-    stock: 8,
-    threshold: 30,
-    maxStock: 100,
-    status: "critical",
-    lastUpdated: "2024-01-15",
-  },
-  {
-    id: 6,
-    sku: "SKU-006789",
-    name: "Cola 2L",
-    category: "Beverages",
-    stock: 245,
-    threshold: 100,
-    maxStock: 400,
-    status: "excess",
-    lastUpdated: "2024-01-14",
-  },
-  {
-    id: 7,
-    sku: "SKU-007890",
-    name: "Potato Chips",
-    category: "Snacks",
-    stock: 156,
-    threshold: 80,
-    maxStock: 250,
-    status: "good",
-    lastUpdated: "2024-01-15",
-  },
-  {
-    id: 8,
-    sku: "SKU-008901",
-    name: "Laundry Detergent",
-    category: "Household",
-    stock: 67,
-    threshold: 40,
-    maxStock: 150,
-    status: "good",
-    lastUpdated: "2024-01-13",
-  },
-  {
-    id: 9,
-    sku: "SKU-009012",
-    name: "Orange Juice 1L",
-    category: "Beverages",
-    stock: 34,
-    threshold: 50,
-    maxStock: 180,
-    status: "low",
-    lastUpdated: "2024-01-15",
-  },
-  {
-    id: 10,
-    sku: "SKU-010123",
-    name: "Chicken Breast 1kg",
-    category: "Meat",
-    stock: 28,
-    threshold: 25,
-    maxStock: 100,
-    status: "good",
-    lastUpdated: "2024-01-15",
-  },
-];
+import { useQuery } from "@tanstack/react-query";
 
-const categories = [
-  "All Categories",
-  "Dairy",
-  "Bakery",
-  "Produce",
-  "Beverages",
-  "Snacks",
-  "Household",
-  "Meat",
-];
+interface InventoryItem {
+  id: number;
+  sku: string;
+  name: string;
+  category: string;
+  stock: number;
+  threshold: number;
+  maxStock: number;
+  status: string;
+  lastUpdated: string;
+  supplier?: string;
+}
 
 const statusConfig: Record<string, { label: string; variant: "destructive" | "default" | "secondary" | "outline"; progressClass: string }> = {
   critical: {
@@ -185,10 +76,49 @@ const statusConfig: Record<string, { label: string; variant: "destructive" | "de
   },
 };
 
+const categories = [
+  "All Categories",
+  "Dairy",
+  "Bakery",
+  "Produce",
+  "Beverages",
+  "Snacks",
+  "Household",
+  "Meat",
+];
+
 export default function InventoryPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedStatus, setSelectedStatus] = useState("all");
+
+  const { data: inventoryData = [], isLoading } = useQuery({
+    queryKey: ["inventory"],
+    queryFn: async () => {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:5000/api/inventory", {
+        headers: {
+          "x-auth-token": token || "",
+        },
+      });
+      if (!res.ok) throw new Error("Failed to fetch inventory");
+      const data = await res.json();
+
+      // Transform snake_case from DB to camelCase for frontend
+      return data.map((item: any) => ({
+        id: item.id,
+        sku: item.sku,
+        name: item.name,
+        category: item.category,
+        stock: item.stock,
+        threshold: item.threshold,
+        maxStock: item.max_stock, // DB column: max_stock
+        status: item.status,
+        lastUpdated: item.last_updated, // DB column: last_updated
+        supplier: item.supplier,
+      })) as InventoryItem[];
+    },
+  });
 
   const filteredData = inventoryData.filter((item) => {
     const matchesSearch =
@@ -330,7 +260,11 @@ export default function InventoryPage() {
                 </TableHeader>
                 <TableBody>
                   {filteredData.map((item) => {
-                    const config = statusConfig[item.status];
+                    const config = statusConfig[item.status] || {
+                      label: item.status,
+                      variant: "secondary",
+                      progressClass: "[&>div]:bg-secondary",
+                    };
                     const stockPercent = (item.stock / item.maxStock) * 100;
                     return (
                       <TableRow key={item.id} className="cursor-pointer hover:bg-muted/50">
