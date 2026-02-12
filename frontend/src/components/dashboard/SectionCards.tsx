@@ -109,16 +109,16 @@ export function SectionCards() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-2">
         {[1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-[160px] w-full rounded-xl" />
+          <Skeleton key={i} className="h-[160px] w-[160px] rounded-xl" />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4">
       {cards.map((stat) => (
         <Card key={stat.title} className="@container/card">
           <CardHeader className="flex flex-row items-start justify-between pb-2">
@@ -152,9 +152,7 @@ export function SectionCards() {
           <CardContent className="pb-2">
             <p className="text-sm text-muted-foreground">{stat.description}</p>
           </CardContent>
-          <CardFooter className="pt-2">
-            <p className="text-xs text-muted-foreground">{stat.footer}</p>
-          </CardFooter>
+
         </Card>
       ))}
     </div>

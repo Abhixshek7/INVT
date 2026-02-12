@@ -85,7 +85,7 @@ export function ChartAreaInteractive() {
   }
 
   return (
-    <Card className="@container/card">
+    <Card className="@container/card h-full flex flex-col">
       <CardHeader>
         <CardTitle>Sales vs Forecast</CardTitle>
         <CardDescription>
@@ -127,10 +127,10 @@ export function ChartAreaInteractive() {
           </Select>
         </CardAction>
       </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6 flex-1 min-h-0">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[280px] w-full"
+          className="aspect-auto h-full w-full min-h-[250px]"
         >
           <AreaChart data={filteredData}>
             <defs>
