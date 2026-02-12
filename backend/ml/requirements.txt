@@ -1,0 +1,6 @@
+pandas
+numpy
+prophet
+joblib
+psycopg2-binary
+scikit-learn

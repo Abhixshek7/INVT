@@ -33,42 +33,56 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navMain = [
-  { title: "Dashboard", url: "/dashboard", icon: IconDashboard },
-  { title: "Inventory", url: "/inventory", icon: IconPackage },
-  { title: "Low Stock", url: "/low-stock", icon: IconAlertTriangle },
-  { title: "Analytics", url: "/analytics", icon: IconChartBar },
-  { title: "Notifications", url: "/notifications", icon: IconBell }
+  { title: "Dashboard", url: "/dashboard", icon: IconDashboard, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
+  { title: "Inventory", url: "/inventory", icon: IconPackage, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
+  { title: "Low Stock", url: "/low-stock", icon: IconAlertTriangle, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
+  { title: "Analytics", url: "/analytics", icon: IconChartBar, roles: ["admin", "inventory_analyst"] },
+  { title: "Notifications", url: "/notifications", icon: IconBell, roles: ["admin", "store_manager", "inventory_analyst", "staff"] }
 ];
 
 const navSupplyChain = [
-  { title: "Purchase Orders", url: "/purchase-orders", icon: IconFileInvoice },
-  { title: "Warehouse", url: "/warehouse", icon: IconBuildingWarehouse },
-  { title: "Shipments", url: "/shipments", icon: IconTruck },
-  { title: "Suppliers", url: "/suppliers", icon: IconBox },
+  { title: "Purchase Orders", url: "/purchase-orders", icon: IconFileInvoice, roles: ["admin", "store_manager"] },
+  { title: "Warehouse", url: "/warehouse", icon: IconBuildingWarehouse, roles: ["admin", "store_manager"] },
+  { title: "Shipments", url: "/shipments", icon: IconTruck, roles: ["admin", "store_manager"] },
+  { title: "Suppliers", url: "/suppliers", icon: IconBox, roles: ["admin", "store_manager"] },
 ];
 
 const navForecasting = [
-  { title: "Demand Forecast", url: "/forecast", icon: IconReportAnalytics },
-  { title: "Reorder Suggestions", url: "/reorder", icon: IconRefresh },
+  { title: "Demand Forecast", url: "/forecast", icon: IconReportAnalytics, roles: ["admin", "inventory_analyst"] },
+  { title: "Reorder Suggestions", url: "/reorder", icon: IconRefresh, roles: ["admin", "inventory_analyst"] },
 ];
 
 const navAdmin = [
-  { title: "Admin Access", url: "/admin", icon: IconUserShield },
+  { title: "Admin Access", url: "/admin", icon: IconUserShield, roles: ["admin"] },
 ];
 
 const navGeneral = [
-  { title: "Settings", url: "/settings", icon: IconSettings },
-  { title: "Help", url: "/help", icon: IconHelp },
+  { title: "Settings", url: "/settings", icon: IconSettings, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
+  { title: "Help", url: "/help", icon: IconHelp, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation();
   const { state, toggleSidebar } = useSidebar();
+  const { user, logout } = useAuth();
   const collapsed = state === "collapsed";
 
   const isActive = (url: string) => location.pathname === url;
+
+  const userRole = user?.role || "";
+
+  const filterByRole = (items: any[]) => {
+    return items.filter(item => item.roles.includes(userRole));
+  };
+
+  const filteredMain = filterByRole(navMain);
+  const filteredSupplyChain = filterByRole(navSupplyChain);
+  const filteredForecasting = filterByRole(navForecasting);
+  const filteredAdmin = filterByRole(navAdmin);
+  const filteredGeneral = filterByRole(navGeneral);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -111,103 +125,111 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent className="custom-scrollbar">
         {/* Main Navigation */}
-        <SidebarGroup>
-          <SidebarGroupLabel>MENU</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navMain.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    tooltip={item.title}
-                  >
-                    <NavLink to={item.url}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {filteredMain.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>MENU</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {filteredMain.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive(item.url)}
+                      tooltip={item.title}
+                    >
+                      <NavLink to={item.url}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
         {/* Supply Chain */}
-        <SidebarGroup>
-          <SidebarGroupLabel>SUPPLY CHAIN</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navSupplyChain.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    tooltip={item.title}
-                  >
-                    <NavLink to={item.url}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {filteredSupplyChain.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>SUPPLY CHAIN</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {filteredSupplyChain.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive(item.url)}
+                      tooltip={item.title}
+                    >
+                      <NavLink to={item.url}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
         {/* Forecasting */}
-        <SidebarGroup>
-          <SidebarGroupLabel>FORECASTING</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navForecasting.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    tooltip={item.title}
-                  >
-                    <NavLink to={item.url}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {filteredForecasting.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>FORECASTING</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {filteredForecasting.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive(item.url)}
+                      tooltip={item.title}
+                    >
+                      <NavLink to={item.url}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
         {/* Admin */}
-        <SidebarGroup>
-          <SidebarGroupLabel>ADMIN</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navAdmin.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.url)}
-                    tooltip={item.title}
-                  >
-                    <NavLink to={item.url}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {filteredAdmin.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel>ADMIN</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {filteredAdmin.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive(item.url)}
+                      tooltip={item.title}
+                    >
+                      <NavLink to={item.url}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
         {/* General - pushed towards bottom */}
         <SidebarGroup className="mt-auto">
           <SidebarGroupLabel>GENERAL</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navGeneral.map((item) => (
+              {filteredGeneral.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
@@ -222,7 +244,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuItem>
               ))}
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Logout" className="text-destructive hover:text-destructive">
+                <SidebarMenuButton
+                  onClick={logout}
+                  tooltip="Logout"
+                  className="text-destructive hover:text-destructive"
+                >
                   <IconLogout className="size-4" />
                   <span>Logout</span>
                 </SidebarMenuButton>

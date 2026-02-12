@@ -17,6 +17,7 @@ import {
   IconSettings,
   IconHelp,
   IconLogout,
+  IconUserShield,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,37 +32,55 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navMain = [
-  { title: "Dashboard", url: "/dashboard", icon: IconDashboard },
-  { title: "Inventory", url: "/inventory", icon: IconPackage },
-  { title: "Low Stock", url: "/low-stock", icon: IconAlertTriangle },
-  { title: "Analytics", url: "/analytics", icon: IconChartBar },
+  { title: "Dashboard", url: "/dashboard", icon: IconDashboard, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
+  { title: "Inventory", url: "/inventory", icon: IconPackage, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
+  { title: "Low Stock", url: "/low-stock", icon: IconAlertTriangle, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
+  { title: "Analytics", url: "/analytics", icon: IconChartBar, roles: ["admin", "inventory_analyst"] },
 ];
 
 const navSupplyChain = [
-  { title: "Purchase Orders", url: "/purchase-orders", icon: IconFileInvoice },
-  { title: "Warehouse", url: "/warehouse", icon: IconBuildingWarehouse },
-  { title: "Shipments", url: "/shipments", icon: IconTruck },
-  { title: "Suppliers", url: "/suppliers", icon: IconBox },
+  { title: "Purchase Orders", url: "/purchase-orders", icon: IconFileInvoice, roles: ["admin", "store_manager"] },
+  { title: "Warehouse", url: "/warehouse", icon: IconBuildingWarehouse, roles: ["admin", "store_manager"] },
+  { title: "Shipments", url: "/shipments", icon: IconTruck, roles: ["admin", "store_manager"] },
+  { title: "Suppliers", url: "/suppliers", icon: IconBox, roles: ["admin", "store_manager"] },
 ];
 
 const navForecasting = [
-  { title: "Demand Forecast", url: "/forecast", icon: IconReportAnalytics },
-  { title: "Reorder Suggestions", url: "/reorder", icon: IconRefresh },
+  { title: "Demand Forecast", url: "/forecast", icon: IconReportAnalytics, roles: ["admin", "inventory_analyst"] },
+  { title: "Reorder Suggestions", url: "/reorder", icon: IconRefresh, roles: ["admin", "inventory_analyst"] },
+];
+
+const navAdmin = [
+  { title: "Admin Access", url: "/admin", icon: IconUserShield, roles: ["admin"] },
 ];
 
 const navGeneral = [
-  { title: "Notifications", url: "/notifications", icon: IconBell },
-  { title: "Settings", url: "/settings", icon: IconSettings },
-  { title: "Help", url: "/help", icon: IconHelp },
+  { title: "Notifications", url: "/notifications", icon: IconBell, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
+  { title: "Settings", url: "/settings", icon: IconSettings, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
+  { title: "Help", url: "/help", icon: IconHelp, roles: ["admin", "store_manager", "inventory_analyst", "staff"] },
 ];
 
 export function TopBar() {
   const location = useLocation();
+  const { user, logout } = useAuth();
   const isActive = (url: string) => location.pathname === url;
 
-  const NavSection = ({ title, items }: { title: string; items: typeof navMain }) => (
+  const userRole = user?.role || "";
+
+  const filterByRole = (items: any[]) => {
+    return items.filter(item => item.roles.includes(userRole));
+  };
+
+  const filteredMain = filterByRole(navMain);
+  const filteredSupplyChain = filterByRole(navSupplyChain);
+  const filteredForecasting = filterByRole(navForecasting);
+  const filteredAdmin = filterByRole(navAdmin);
+  const filteredGeneral = filterByRole(navGeneral);
+
+  const NavSection = ({ title, items }: { title: string; items: any[] }) => (
     <div className="space-y-1">
       <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 py-2">
         {title}
@@ -100,12 +119,16 @@ export function TopBar() {
             </SheetTitle>
           </SheetHeader>
           <nav className="flex flex-col gap-4 p-4 overflow-y-auto max-h-[calc(100vh-80px)]">
-            <NavSection title="Menu" items={navMain} />
-            <NavSection title="Supply Chain" items={navSupplyChain} />
-            <NavSection title="Forecasting" items={navForecasting} />
-            <NavSection title="General" items={navGeneral} />
+            {filteredMain.length > 0 && <NavSection title="Menu" items={filteredMain} />}
+            {filteredSupplyChain.length > 0 && <NavSection title="Supply Chain" items={filteredSupplyChain} />}
+            {filteredForecasting.length > 0 && <NavSection title="Forecasting" items={filteredForecasting} />}
+            {filteredAdmin.length > 0 && <NavSection title="Admin" items={filteredAdmin} />}
+            {filteredGeneral.length > 0 && <NavSection title="General" items={filteredGeneral} />}
             <div className="border-t pt-4 mt-auto">
-              <button className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-destructive hover:bg-destructive/10 w-full transition-colors">
+              <button
+                onClick={logout}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-destructive hover:bg-destructive/10 w-full transition-colors"
+              >
                 <IconLogout className="size-4" />
                 <span>Logout</span>
               </button>

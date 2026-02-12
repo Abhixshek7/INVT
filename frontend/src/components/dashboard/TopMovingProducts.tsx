@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
 
 // Mock data based on the provided HTML
 const initialData = [
@@ -222,30 +223,25 @@ const getStatusBadge = (status: string) => {
 export function TopMovingProducts() {
     const [filter, setFilter] = useState("today");
 
-    const filteredData = initialData.filter((item) => {
-        const now = new Date();
-        const itemDate = new Date(item.date);
-
-        if (filter === "today") {
-            return itemDate.toDateString() === now.toDateString();
+    const { data: topProducts = [] } = useQuery({
+        queryKey: ["top-products"],
+        queryFn: async () => {
+            const res = await fetch("http://localhost:5000/api/dashboard/top-products");
+            if (!res.ok) throw new Error("Failed to fetch top products");
+            return res.json();
         }
-        if (filter === "week") {
-            const weekAgo = new Date();
-            weekAgo.setDate(now.getDate() - 7);
-            return itemDate >= weekAgo;
-        }
-        if (filter === "month") {
-            const monthAgo = new Date();
-            monthAgo.setMonth(now.getMonth() - 1);
-            return itemDate >= monthAgo;
-        }
-        if (filter === "year") {
-            const yearAgo = new Date();
-            yearAgo.setFullYear(now.getFullYear() - 1);
-            return itemDate >= yearAgo;
-        }
-        return true;
     });
+
+    const products = topProducts.map((item: any, idx: number) => ({
+        id: idx,
+        name: item.name,
+        category: item.category,
+        items: parseInt(item.stock),
+        sold: parseInt(item.sold_last_30_days),
+        revenue: parseFloat(item.revenue),
+        status: parseInt(item.stock) > 20 ? "In Stock" : "Low Stock",
+        initials: item.name.substring(0, 2).toUpperCase()
+    }));
 
     return (
         <Card>
@@ -269,7 +265,7 @@ export function TopMovingProducts() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="w-[50px]"></TableHead>
-                                <TableHead>Customer</TableHead>
+                                <TableHead>Product</TableHead>
                                 <TableHead>
                                     <Button variant="ghost" size="sm" className="h-8 gap-2 px-0 hover:bg-transparent">
                                         Total <ChevronsUpDown className="size-4 opacity-50" />
@@ -284,8 +280,8 @@ export function TopMovingProducts() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredData.length > 0 ? (
-                                filteredData.map((item) => (
+                            {products.length > 0 ? (
+                                products.map((item) => (
                                     <TableRow key={item.id}>
                                         <TableCell>
                                             <div className="flex justify-center">
@@ -297,29 +293,29 @@ export function TopMovingProducts() {
                                         <TableCell>
                                             <div className="flex items-center gap-3">
                                                 <Avatar className="size-10 border border-border/60">
-                                                    <AvatarFallback className={`${item.customer.color} text-xs font-semibold uppercase`}>
-                                                        {item.customer.initials}
+                                                    <AvatarFallback className={`bg-primary/10 text-primary text-xs font-semibold uppercase`}>
+                                                        {item.initials}
                                                     </AvatarFallback>
                                                 </Avatar>
                                                 <div className="flex flex-col items-start">
                                                     <span className="text-sm font-medium">
-                                                        {item.customer.name}
+                                                        {item.name}
                                                     </span>
                                                     <span className="text-xs text-muted-foreground">
-                                                        {item.customer.email}
+                                                        {item.category}
                                                     </span>
                                                 </div>
                                             </div>
                                         </TableCell>
                                         <TableCell>
                                             <span className="text-sm font-semibold tabular-nums">
-                                                ${item.total.toLocaleString()}
+                                                ${item.revenue.toLocaleString()}
                                             </span>
                                         </TableCell>
                                         <TableCell>{getStatusBadge(item.status)}</TableCell>
                                         <TableCell>
                                             <span className="text-sm text-muted-foreground">
-                                                {item.items} items
+                                                {item.sold} sold
                                             </span>
                                         </TableCell>
                                     </TableRow>

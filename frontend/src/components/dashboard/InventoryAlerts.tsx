@@ -23,61 +23,33 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const lowStockItems = [
-  {
-    id: 1,
-    sku: "SKU-001234",
-    name: "Organic Milk 1L",
-    category: "Dairy",
-    currentStock: 12,
-    threshold: 50,
-    reorderQty: 100,
-    urgency: "critical",
-  },
-  {
-    id: 2,
-    sku: "SKU-002345",
-    name: "Whole Wheat Bread",
-    category: "Bakery",
-    currentStock: 18,
-    threshold: 40,
-    reorderQty: 60,
-    urgency: "critical",
-  },
-  {
-    id: 3,
-    sku: "SKU-003456",
-    name: "Fresh Eggs (12pk)",
-    category: "Dairy",
-    currentStock: 35,
-    threshold: 60,
-    reorderQty: 80,
-    urgency: "low",
-  },
-  {
-    id: 4,
-    sku: "SKU-004567",
-    name: "Bananas (bunch)",
-    category: "Produce",
-    currentStock: 42,
-    threshold: 80,
-    reorderQty: 120,
-    urgency: "low",
-  },
-  {
-    id: 5,
-    sku: "SKU-005678",
-    name: "Paper Towels",
-    category: "Household",
-    currentStock: 8,
-    threshold: 30,
-    reorderQty: 50,
-    urgency: "critical",
-  },
-];
+const getUrgency = (stock: number, threshold: number) => {
+  if (stock === 0) return "out_of_stock";
+  if (stock <= threshold * 0.5) return "critical";
+  return "low";
+};
 
 export function InventoryAlerts() {
+  const { data: alertsData, isLoading } = useQuery({
+    queryKey: ["low-stock-alerts"],
+    queryFn: async () => {
+      const res = await fetch("http://localhost:5000/api/dashboard/low-stock");
+      if (!res.ok) throw new Error("Failed to fetch low stock items");
+      return res.json();
+    }
+  });
+
+  const items = alertsData?.map((item: any) => ({
+    ...item,
+    urgency: getUrgency(item.currentStock, item.threshold)
+  })) || [];
+
+  if (isLoading) {
+    return <Skeleton className="h-[300px] w-full" />;
+  }
   return (
     <div className="grid gap-4 lg:grid-cols-1">
       {/* Low Stock Alerts */}
@@ -107,7 +79,7 @@ export function InventoryAlerts() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {lowStockItems.slice(0, 5).map((item) => (
+              {items.map((item: any) => (
                 <TableRow key={item.id}>
                   <TableCell>
                     <div>
@@ -128,8 +100,8 @@ export function InventoryAlerts() {
                       <Progress
                         value={(item.currentStock / item.threshold) * 100}
                         className={`h-2 ${item.urgency === "critical"
-                            ? "[&>div]:bg-destructive"
-                            : "[&>div]:bg-warning"
+                          ? "[&>div]:bg-destructive"
+                          : "[&>div]:bg-warning"
                           }`}
                       />
                     </div>
@@ -137,11 +109,11 @@ export function InventoryAlerts() {
                   <TableCell className="text-right">
                     <Badge
                       variant={
-                        item.urgency === "critical" ? "destructive" : "outline"
+                        item.urgency === "critical" || item.urgency === "out_of_stock" ? "destructive" : "outline"
                       }
                       className="text-xs"
                     >
-                      {item.urgency === "critical" ? "Reorder Now" : "Low"}
+                      {item.urgency === "out_of_stock" ? "Out of Stock" : item.urgency === "critical" ? "Critical" : "Low"}
                     </Badge>
                   </TableCell>
                 </TableRow>

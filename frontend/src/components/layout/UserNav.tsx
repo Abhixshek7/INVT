@@ -32,14 +32,14 @@ export function UserNav({ showDetails = true, className }: UserNavProps) {
         <Button variant="ghost" className="relative h-auto p-1.5 hover:bg-accent">
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9">
-              <AvatarImage src={user.avatar_url} alt={user.username} />
+              <AvatarImage src={user.avatar_url} alt={user.username || user.email} />
               <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
-                {user.username.substring(0, 2).toUpperCase()}
+                {(user.username || user.email || 'U').substring(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             {showDetails && (
               <div className="hidden flex-col items-start text-left md:flex">
-                <span className="text-sm font-medium leading-none">{user.username}</span>
+                <span className="text-sm font-medium leading-none">{user.username || user.email}</span>
                 <span className="text-xs text-muted-foreground">{user.email}</span>
               </div>
             )}
@@ -49,7 +49,7 @@ export function UserNav({ showDetails = true, className }: UserNavProps) {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.username}</p>
+            <p className="text-sm font-medium leading-none">{user.username || user.email}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>

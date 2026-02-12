@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,8 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Notification {
   id: string;
@@ -109,22 +111,42 @@ const mockNotifications: Notification[] = [
 ];
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("all");
 
+  const { data: apiNotifications = [], isLoading } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: async () => {
+      const res = await fetch("http://localhost:5000/api/dashboard/notifications");
+      if (!res.ok) throw new Error("Failed to fetch notifications");
+      return res.json();
+    }
+  });
+
+  const [localNotifications, setLocalNotifications] = useState<Notification[]>([]);
+
+  // Update local state when API data changes
+  useEffect(() => {
+    if (apiNotifications.length > 0) {
+      setLocalNotifications(apiNotifications);
+    }
+  }, [apiNotifications]);
+
+  const notifications = localNotifications.length > 0 ? localNotifications : apiNotifications;
+
+
   const toggleFavorite = (id: string) => {
-    setNotifications((prev) =>
+    setLocalNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, isFavorite: !n.isFavorite } : n))
     );
   };
 
   const deleteNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    setLocalNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
   const markAsRead = (id: string) => {
-    setNotifications((prev) =>
+    setLocalNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
     );
   };

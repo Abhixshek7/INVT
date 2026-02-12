@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 navigate("/analytics");
                 break;
             case 'staff':
-                navigate("/warehouse");
+                navigate("/dashboard");
                 break;
             default:
                 navigate("/dashboard");
