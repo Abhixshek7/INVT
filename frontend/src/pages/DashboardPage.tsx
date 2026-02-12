@@ -30,16 +30,16 @@ export default function DashboardPage() {
 
           {/* Low Stock Alerts - Bottom Left */}
           <div className="col-span-6 md:col-span-3 lg:col-span-3">
-            <div className="h-full rounded-xl bg-white dark:bg-black border [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] dark:[border:1px_solid_rgba(255,255,255,.1)]">
+            
               <InventoryAlerts />
-            </div>
+            
           </div>
 
           {/* Top Moving Products - Bottom Right */}
           <div className="col-span-6 md:col-span-3 lg:col-span-3">
-            <div className="h-full rounded-xl bg-white dark:bg-black border [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)] dark:[border:1px_solid_rgba(255,255,255,.1)]">
+            
               <TopMovingProductsPie />
-            </div>
+  
           </div>
         </BentoGrid>
       </div>
