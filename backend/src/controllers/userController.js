@@ -129,3 +129,54 @@ exports.getUserById = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
+
+// Update own profile
+exports.updateProfile = async (req, res) => {
+    const { firstName, lastName, phone, settings } = req.body;
+    const userId = req.user.id; // From authMiddleware
+
+    try {
+        // Build update query dynamically or just update all fields
+        // Since we are updating specific profile fields, we can do a direct update
+
+        // Note: Using COALESCE to keep existing values if not provided, or handles client sending full object
+        // Actually, if client sends null/undefined, we might want to keep it or set it.
+        // Let's assume the client sends the data they want to save.
+
+        // We need to fetch current user first to merge settings if we want partial updates,
+        // but typically a save on settings page sends the whole state.
+        // Let's assume we receive the full settings object or at least the parts we want to update.
+        // For simplicity, we update what is provided.
+
+        // However, raw SQL 'COALESCE($1, first_name)' might be better if fields are optional.
+
+        const updateQuery = `
+            UPDATE users 
+            SET 
+                first_name = COALESCE($1, first_name),
+                last_name = COALESCE($2, last_name),
+                phone = COALESCE($3, phone),
+                settings = COALESCE($4, settings)
+            WHERE id = $5
+            RETURNING id, username, email, role, first_name, last_name, phone, settings, avatar_url
+        `;
+
+        const result = await pool.query(updateQuery, [
+            firstName,
+            lastName,
+            phone,
+            settings, // Ensure this is a JSON object or stringified if library doesn't handle it (pg handles objects usually)
+            userId
+        ]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        res.json({ msg: 'Profile updated successfully', user: result.rows[0] });
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+};

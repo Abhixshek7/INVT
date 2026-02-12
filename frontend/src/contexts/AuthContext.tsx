@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Role-based routing
         switch (userData.role) {
             case 'admin':
-                navigate("/admin");
+                navigate("/dashboard");
                 break;
             case 'store_manager':
                 navigate("/dashboard");

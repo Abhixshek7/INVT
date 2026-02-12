@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController');
-const authMiddleware = require('../middleware/authMiddleware');
+const userController = require('../controllers/userController'); const authMiddleware = require('../middleware/authMiddleware');
 const checkRole = require('../middleware/roleMiddleware');
+
+// @route   PUT api/users/profile
+// @desc    Update own profile
+// @access  Private
+router.put('/profile', authMiddleware, userController.updateProfile);
 
 // @route   GET api/users
 // @desc    Get all users
