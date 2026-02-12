@@ -1,30 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 import {
   IconCamera,
   IconLock,
   IconMail,
   IconBell,
   IconShieldLock,
-  IconDevices,
   IconUserPlus,
   IconDotsVertical,
 } from "@tabler/icons-react";
 
 export default function SettingsPage() {
+  const [loading, setLoading] = useState(false);
+
   const [profileData, setProfileData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    phone: "+1 234 567 8900",
-    email: "john.doe@company.com",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
   });
 
   const [notifications, setNotifications] = useState({
@@ -50,6 +52,100 @@ export default function SettingsPage() {
     { name: "Emily Davis", role: "Staff", access: "View Only" },
   ];
 
+  // Fetch user data on mount
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await fetch("http://localhost:5000/api/auth/me", {
+          headers: {
+            "x-auth-token": token,
+          },
+        });
+
+        if (response.ok) {
+          const userData = await response.json();
+
+          setProfileData({
+            firstName: userData.first_name || "",
+            lastName: userData.last_name || "",
+            phone: userData.phone || "",
+            email: userData.email || "",
+          });
+
+          // If settings exist, populate them
+          if (userData.settings) {
+            if (userData.settings.notifications) {
+              const { dndTime: savedDndTime, ...savedNotifs } = userData.settings.notifications;
+              setNotifications(prev => ({ ...prev, ...savedNotifs }));
+              if (savedDndTime) {
+                setDndTime(savedDndTime);
+              }
+            }
+            if (userData.settings.security) {
+              setSecurity(prev => ({ ...prev, ...userData.settings.security }));
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user settings:", error);
+        toast.error("Failed to load settings");
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleSave = async () => {
+    setLoading(true);
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("You must be logged in to save settings");
+      setLoading(false);
+      return;
+    }
+
+    const payload = {
+      firstName: profileData.firstName,
+      lastName: profileData.lastName,
+      phone: profileData.phone,
+      settings: {
+        notifications: {
+          ...notifications,
+          dndTime
+        },
+        security
+      }
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/users/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        toast.success("Settings saved successfully");
+      } else {
+        const errorData = await response.json();
+        const errorMessage = errorData.msg || "Unknown error";
+        toast.error(`Failed to save settings: ${errorMessage}`);
+      }
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      toast.error("An error occurred while saving settings");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <DashboardLayout title="Settings">
       {/* <div className="mb-6">
@@ -71,7 +167,7 @@ export default function SettingsPage() {
                   <Avatar className="h-24 w-24 border-4 border-primary/20">
                     <AvatarImage src="" />
                     <AvatarFallback className="text-2xl bg-primary/10 text-primary">
-                      {profileData.firstName[0]}{profileData.lastName[0]}
+                      {profileData.firstName?.[0] || ""}{profileData.lastName?.[0] || ""}
                     </AvatarFallback>
                   </Avatar>
                   <Button
@@ -85,7 +181,7 @@ export default function SettingsPage() {
                 <Button variant="link" className="text-destructive text-sm">
                   Remove photo
                 </Button>
-                
+
               </div>
 
               {/* Name Fields */}
@@ -140,10 +236,12 @@ export default function SettingsPage() {
                   </Button>
                 </div>
               </div>
-                <div className="flex gap-3 w-full justify-end">
-            <Button variant="outline">Cancel</Button>
-            <Button>Save Changes</Button>
-             </div>
+              <div className="flex gap-3 w-full justify-end">
+                <Button variant="outline">Cancel</Button>
+                <Button onClick={handleSave} disabled={loading}>
+                  {loading ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -206,9 +304,11 @@ export default function SettingsPage() {
               </div>
               <p className="text-sm text-muted-foreground">Notify on new/unfamiliar logins</p>
               <div className="flex gap-3 w-full justify-end">
-            <Button variant="outline">Cancel</Button>
-            <Button>Save Changes</Button>
-             </div>
+                <Button variant="outline">Cancel</Button>
+                <Button onClick={handleSave} disabled={loading}>
+                  {loading ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -319,9 +419,11 @@ export default function SettingsPage() {
               </div>
 
               <div className="flex gap-3 w-full justify-end">
-            <Button variant="outline">Cancel</Button>
-            <Button>Save Changes</Button>
-             </div>
+                <Button variant="outline">Cancel</Button>
+                <Button onClick={handleSave} disabled={loading}>
+                  {loading ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -413,9 +515,11 @@ export default function SettingsPage() {
               </div>
 
               <div className="flex gap-3 w-full justify-end">
-            <Button variant="outline">Cancel</Button>
-            <Button>Save Changes</Button>
-             </div>
+                <Button variant="outline">Cancel</Button>
+                <Button onClick={handleSave} disabled={loading}>
+                  {loading ? "Saving..." : "Save Changes"}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

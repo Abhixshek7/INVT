@@ -95,7 +95,7 @@ exports.googleCallback = (req, res) => {
 // Get Current User (Protected Route Example)
 exports.getMe = async (req, res) => {
     try {
-        const user = await pool.query('SELECT id, username, email, role, avatar_url FROM users WHERE id = $1', [req.user.id]);
+        const user = await pool.query('SELECT id, username, email, role, avatar_url, first_name, last_name, phone, settings FROM users WHERE id = $1', [req.user.id]);
         res.json(user.rows[0]);
     } catch (err) {
         console.error(err.message);
