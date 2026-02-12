@@ -5,6 +5,7 @@ import { IconChartBar, IconTrendingUp, IconCalendar, IconTarget } from "@tabler/
 import { Button } from "@/components/ui/button";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { forecastService } from "@/services/forecastService";
 import {
   LineChart,
   Line,
@@ -16,38 +17,28 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-interface ForecastData {
-  ds: string;
-  yhat: number;
-  yhat_lower: number;
-  yhat_upper: number;
-}
-
 export default function AnalyticsPage() {
   const [isTraining, setIsTraining] = useState(false);
 
-  const { data: forecastData, isLoading: isForecastLoading, error: forecastError, refetch: refetchForecast } = useQuery({
+  // Fetch forecast data using the service
+  const { data: forecastResponse, isLoading: isForecastLoading, error: forecastError, refetch: refetchForecast } = useQuery({
     queryKey: ["forecast"],
-    queryFn: async () => {
-      const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/forecast?days=30", {
-        headers: {
-          "x-auth-token": token || "",
-        },
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to fetch forecast");
-      }
-      return res.json() as Promise<ForecastData[]>;
-    },
+    queryFn: () => forecastService.getForecast(30),
     retry: false,
   });
+
+  const forecastData = forecastResponse?.predictions || [];
 
   const { data: metricsData } = useQuery({
     queryKey: ["analytics-metrics"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/api/dashboard/analytics");
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:5000/api/dashboard/analytics", {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "x-auth-token": token || "",
+        },
+      });
       if (!res.ok) throw new Error("Failed to fetch metrics");
       return res.json();
     }
@@ -56,19 +47,10 @@ export default function AnalyticsPage() {
   const { mutate: trainModel } = useMutation({
     mutationFn: async () => {
       setIsTraining(true);
-      const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/forecast/train", {
-        method: "POST",
-        headers: {
-          "x-auth-token": token || "",
-        },
-      });
-      if (!res.ok) throw new Error("Training failed");
-      return res.json();
+      return forecastService.trainModel();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Model training started!");
-      console.log(data);
       // Poll or wait, then refetch
       setTimeout(() => {
         setIsTraining(false);
@@ -76,7 +58,7 @@ export default function AnalyticsPage() {
         toast.success("Training completed successfully");
       }, 5000); // Mock wait for UX, real training might take longer
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       setIsTraining(false);
       toast.error("Failed to start training: " + error.message);
     }
@@ -189,7 +171,7 @@ export default function AnalyticsPage() {
                   <LineChart data={forecastData}>
                     <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                     <XAxis
-                      dataKey="ds"
+                      dataKey="date"
                       tickFormatter={(date) => new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                       stroke="#888888"
                       fontSize={12}
@@ -202,7 +184,7 @@ export default function AnalyticsPage() {
                     <Legend />
                     <Line
                       type="monotone"
-                      dataKey="yhat"
+                      dataKey="predicted_quantity"
                       name="Forecast"
                       stroke="#2563eb"
                       strokeWidth={2}
@@ -210,7 +192,7 @@ export default function AnalyticsPage() {
                     />
                     <Line
                       type="monotone"
-                      dataKey="yhat_lower"
+                      dataKey="lower_bound"
                       name="Confidence Lower"
                       stroke="#93c5fd"
                       strokeDasharray="3 3"
@@ -219,7 +201,7 @@ export default function AnalyticsPage() {
                     />
                     <Line
                       type="monotone"
-                      dataKey="yhat_upper"
+                      dataKey="upper_bound"
                       name="Confidence Upper"
                       stroke="#93c5fd"
                       strokeDasharray="3 3"

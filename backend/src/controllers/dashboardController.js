@@ -202,7 +202,7 @@ const getNotifications = async (req, res) => {
         lowStockQuery.rows.forEach(item => {
             notifications.push({
                 id: `low-${item.sku}`,
-                message: `Warning: ${item.name} stock level is below threshold.`,
+                message: `${item.name} stock level is below threshold. Restock soon.`,
                 timestamp: '15 min ago',
                 isRead: false,
                 isFavorite: false,
