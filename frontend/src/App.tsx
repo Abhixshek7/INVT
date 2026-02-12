@@ -21,6 +21,13 @@ import NotificationsPage from "./pages/NotificationsPage";
 import AdminPage from "./pages/AdminPage";
 import SettingsPage from "./pages/SettingsPage";
 
+// Supply Chain Pages
+import PurchaseOrdersPage from "./pages/PurchaseOrdersPage";
+import WarehousesPage from "./pages/WarehousesPage";
+import ShipmentsPage from "./pages/ShipmentsPage";
+import SuppliersPage from "./pages/SuppliersPage";
+import ReorderPage from "./pages/ReorderPage";
+
 import NotFound from "./pages/NotFound";
 import NotAuthorizedPage from "./pages/NotAuthorizedPage";
 
@@ -68,12 +75,12 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Placeholder routes for other sections - Protected */}
+        {/* Supply Chain Routes - Protected */}
         <Route
           path="/purchase-orders"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <PurchaseOrdersPage />
             </ProtectedRoute>
           }
         />
@@ -81,7 +88,7 @@ const AppRoutes = () => {
           path="/warehouse"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <WarehousesPage />
             </ProtectedRoute>
           }
         />
@@ -89,7 +96,7 @@ const AppRoutes = () => {
           path="/shipments"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <ShipmentsPage />
             </ProtectedRoute>
           }
         />
@@ -97,7 +104,7 @@ const AppRoutes = () => {
           path="/suppliers"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <SuppliersPage />
             </ProtectedRoute>
           }
         />
@@ -113,7 +120,7 @@ const AppRoutes = () => {
           path="/reorder"
           element={
             <ProtectedRoute>
-              <DashboardPage />
+              <ReorderPage />
             </ProtectedRoute>
           }
         />

@@ -54,6 +54,15 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/forecast', require('./routes/forecastRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 
+// Supply Chain Routes
+app.use('/api/suppliers', require('./routes/suppliersRoutes'));
+app.use('/api/warehouses', require('./routes/warehousesRoutes'));
+app.use('/api/purchase-orders', require('./routes/purchaseOrdersRoutes'));
+app.use('/api/shipments', require('./routes/shipmentsRoutes'));
+
+// Reorder Route
+app.use('/api/reorder', require('./routes/reorderRoutes'));
+
 // Basic route to test connection
 app.get('/', (req, res) => {
     res.send('Inventory Management System API is running');
