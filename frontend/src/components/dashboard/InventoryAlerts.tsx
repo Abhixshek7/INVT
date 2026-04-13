@@ -36,7 +36,7 @@ export function InventoryAlerts() {
   const { data: alertsData, isLoading } = useQuery({
     queryKey: ["low-stock-alerts"],
     queryFn: async () => {
-      const res = await fetch(`import.meta.env.VITE_API_URL || "http://localhost:5000"/api/dashboard/low-stock`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/dashboard/low-stock`);
       if (!res.ok) throw new Error("Failed to fetch low stock items");
       return res.json();
     }

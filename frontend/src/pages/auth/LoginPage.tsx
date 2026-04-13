@@ -27,7 +27,7 @@ export default function LoginPage() {
   });
 
   const handleGoogleLogin = () => {
-    window.location.href = `import.meta.env.VITE_API_URL || "http://localhost:5000"/api/auth/google`;
+    window.location.href = `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/auth/google`;
   };
 
   // Check for token or error in URL on load
@@ -55,7 +55,7 @@ export default function LoginPage() {
       // Fetch user data with this token
       const fetchUserData = async () => {
         try {
-          const response = await fetch(`import.meta.env.VITE_API_URL || "http://localhost:5000"/api/auth/me`, {
+          const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/auth/me`, {
             headers: {
               "x-auth-token": token,
             },
@@ -91,7 +91,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`import.meta.env.VITE_API_URL || "http://localhost:5000"/api/auth/login`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -117,7 +117,7 @@ export default function NotificationsPage() {
   const { data: apiNotifications = [], isLoading } = useQuery({
     queryKey: ["notifications"],
     queryFn: async () => {
-      const res = await fetch(`import.meta.env.VITE_API_URL || "http://localhost:5000"/api/dashboard/notifications`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/dashboard/notifications`);
       if (!res.ok) throw new Error("Failed to fetch notifications");
       return res.json();
     }
@@ -237,7 +237,7 @@ export default function NotificationsPage() {
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleFavorite(notification.id);
-                      }}
+                      }
                     >
                       {notification.isFavorite ? (
                         <IconStarFilled className="size-4 text-yellow-500" />
@@ -267,7 +267,7 @@ export default function NotificationsPage() {
                       onClick={(e) => {
                         e.stopPropagation();
                         deleteNotification(notification.id);
-                      }}
+                      }
                     >
                       <IconTrash className="size-4" />
                     </Button>

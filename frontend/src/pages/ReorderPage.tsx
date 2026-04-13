@@ -128,7 +128,7 @@ export default function ReorderPage() {
         queryFn: async () => {
             const token = localStorage.getItem("token");
             const res = await fetch(
-                `import.meta.env.VITE_API_URL || "http://localhost:5000"/api/reorder/suggestions?days=${lookAheadDays}`,
+                `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/reorder/suggestions?days=${lookAheadDays}`,
                 {
                     headers: {
                         "x-auth-token": token || "",
@@ -391,7 +391,7 @@ export default function ReorderPage() {
                                                 onClick={() => {
                                                     setSelectedUrgency("all");
                                                     setSelectedCategory("all");
-                                                }}
+                                                }
                                             >
                                                 Clear filters
                                             </Button>
