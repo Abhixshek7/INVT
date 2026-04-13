@@ -62,7 +62,7 @@ export function SectionCards() {
   const { data: statsData, isLoading } = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || "http://localhost:5000"}`}/api/dashboard/stats`);
+      const res = await fetch(`import.meta.env.VITE_API_URL || "http://localhost:5000"/api/dashboard/stats`);
       if (!res.ok) throw new Error("Failed to fetch stats");
       return res.json();
     }

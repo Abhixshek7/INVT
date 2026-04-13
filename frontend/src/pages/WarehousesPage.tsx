@@ -77,7 +77,7 @@ export default function WarehousesPage() {
         queryKey: ["warehouses"],
         queryFn: async () => {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || "http://localhost:5000"}`}/api/warehouses`, {
+            const res = await fetch(`import.meta.env.VITE_API_URL || "http://localhost:5000"/api/warehouses`, {
                 headers: {
                     "x-auth-token": token || "",
                 },

@@ -59,7 +59,7 @@ export default function SettingsPage() {
       if (!token) return;
 
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || "http://localhost:5000"}`}/api/auth/me`, {
+        const response = await fetch(`import.meta.env.VITE_API_URL || "http://localhost:5000"/api/auth/me`, {
           headers: {
             "x-auth-token": token,
           },
@@ -122,7 +122,7 @@ export default function SettingsPage() {
     };
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || "http://localhost:5000"}`}/api/users/profile`, {
+      const response = await fetch(`import.meta.env.VITE_API_URL || "http://localhost:5000"/api/users/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
