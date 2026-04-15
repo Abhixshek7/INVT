@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { apiUrl } from "@/lib/api";
 
 interface User {
     id: number;
@@ -33,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/api/auth/me", {
+            const response = await fetch(apiUrl("/api/auth/me"), {
                 headers: {
                     "x-auth-token": token,
                 },
