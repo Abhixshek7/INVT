@@ -28,6 +28,7 @@ import {
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
+import { apiUrl } from "@/lib/api";
 
 // Mock data based on the provided HTML
 const initialData = [
@@ -226,7 +227,7 @@ export function TopMovingProducts() {
     const { data: topProducts = [] } = useQuery({
         queryKey: ["top-products"],
         queryFn: async () => {
-            const res = await fetch("http://localhost:5000/api/dashboard/top-products");
+            const res = await fetch(apiUrl("/api/dashboard/top-products"));
             if (!res.ok) throw new Error("Failed to fetch top products");
             return res.json();
         }

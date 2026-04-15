@@ -27,6 +27,7 @@ import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
+import { apiUrl } from "@/lib/api";
 
 // Helper to estimate days until stockout (mock logic for now)
 const estimateStockoutDays = (stock: number) => {
@@ -42,7 +43,7 @@ export default function LowStockPage() {
     queryKey: ["inventory"],
     queryFn: async () => {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/inventory", {
+      const res = await fetch(apiUrl("/api/inventory"), {
         headers: {
           "x-auth-token": token || "",
         },

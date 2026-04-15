@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { forecastService } from "@/services/forecastService";
+import { apiUrl } from "@/lib/api";
 import {
   LineChart,
   Line,
@@ -33,7 +34,7 @@ export default function AnalyticsPage() {
     queryKey: ["analytics-metrics"],
     queryFn: async () => {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/dashboard/analytics", {
+      const res = await fetch(apiUrl("/api/dashboard/analytics"), {
         headers: {
           "Authorization": `Bearer ${token}`,
           "x-auth-token": token || "",

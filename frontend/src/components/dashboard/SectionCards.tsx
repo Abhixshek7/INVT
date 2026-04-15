@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { apiUrl } from "@/lib/api";
 
 const stats = [
   {
@@ -62,7 +63,7 @@ export function SectionCards() {
   const { data: statsData, isLoading } = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/api/dashboard/stats");
+      const res = await fetch(apiUrl("/api/dashboard/stats"));
       if (!res.ok) throw new Error("Failed to fetch stats");
       return res.json();
     }

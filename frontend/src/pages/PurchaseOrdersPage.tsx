@@ -40,6 +40,7 @@ import {
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
+import { apiUrl } from "@/lib/api";
 
 interface PurchaseOrder {
     id: number;
@@ -81,7 +82,7 @@ export default function PurchaseOrdersPage() {
         queryKey: ["purchase-orders"],
         queryFn: async () => {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:5000/api/purchase-orders", {
+            const res = await fetch(apiUrl("/api/purchase-orders"), {
                 headers: {
                     "x-auth-token": token || "",
                 },

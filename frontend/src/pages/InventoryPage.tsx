@@ -39,6 +39,7 @@ import {
 import { Label } from "@/components/ui/label";
 
 import { useQuery } from "@tanstack/react-query";
+import { apiUrl } from "@/lib/api";
 
 interface InventoryItem {
   id: number;
@@ -96,7 +97,7 @@ export default function InventoryPage() {
     queryKey: ["inventory"],
     queryFn: async () => {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/inventory", {
+      const res = await fetch(apiUrl("/api/inventory"), {
         headers: {
           "x-auth-token": token || "",
         },

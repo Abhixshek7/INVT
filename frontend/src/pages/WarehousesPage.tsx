@@ -42,6 +42,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { useQuery } from "@tanstack/react-query";
+import { apiUrl } from "@/lib/api";
 
 interface Warehouse {
     id: number;
@@ -77,7 +78,7 @@ export default function WarehousesPage() {
         queryKey: ["warehouses"],
         queryFn: async () => {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:5000/api/warehouses", {
+            const res = await fetch(apiUrl("/api/warehouses"), {
                 headers: {
                     "x-auth-token": token || "",
                 },

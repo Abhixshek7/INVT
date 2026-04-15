@@ -1,5 +1,5 @@
 // API Service for Forecast endpoints
-const API_BASE_URL = 'http://localhost:5000/api';
+import { apiUrl } from "@/lib/api";
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
@@ -40,7 +40,7 @@ export const forecastService = {
      */
     async getForecast(days: number = 30): Promise<ForecastResponse> {
         const response = await fetch(
-            `${API_BASE_URL}/forecast?days=${days}`,
+            apiUrl(`/api/forecast?days=${days}`),
             {
                 method: 'GET',
                 headers: getAuthHeaders(),
@@ -59,7 +59,7 @@ export const forecastService = {
      * Train the ML model with new data
      */
     async trainModel(): Promise<{ message: string; output: string }> {
-        const response = await fetch(`${API_BASE_URL}/forecast/train`, {
+        const response = await fetch(apiUrl("/api/forecast/train"), {
             method: 'POST',
             headers: getAuthHeaders(),
         });

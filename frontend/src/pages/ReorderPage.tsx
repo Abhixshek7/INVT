@@ -47,6 +47,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { apiUrl } from "@/lib/api";
 
 interface ReorderSuggestion {
     id: number;
@@ -128,7 +129,7 @@ export default function ReorderPage() {
         queryFn: async () => {
             const token = localStorage.getItem("token");
             const res = await fetch(
-                `http://localhost:5000/api/reorder/suggestions?days=${lookAheadDays}`,
+                apiUrl(`/api/reorder/suggestions?days=${lookAheadDays}`),
                 {
                     headers: {
                         "x-auth-token": token || "",

@@ -18,6 +18,7 @@ import {
   IconUserPlus,
   IconDotsVertical,
 } from "@tabler/icons-react";
+import { apiUrl } from "@/lib/api";
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(false);
@@ -59,7 +60,7 @@ export default function SettingsPage() {
       if (!token) return;
 
       try {
-        const response = await fetch("http://localhost:5000/api/auth/me", {
+        const response = await fetch(apiUrl("/api/auth/me"), {
           headers: {
             "x-auth-token": token,
           },
@@ -122,7 +123,7 @@ export default function SettingsPage() {
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/users/profile", {
+      const response = await fetch(apiUrl("/api/users/profile"), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

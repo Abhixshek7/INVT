@@ -49,6 +49,7 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
+import { apiUrl } from "@/lib/api";
 
 
 
@@ -64,7 +65,7 @@ function UserManagement() {
   const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/users", {
+      const response = await fetch(apiUrl("/api/users"), {
         headers: {
           "x-auth-token": token || "",
         },
@@ -105,7 +106,7 @@ function UserManagement() {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/users/invite", {
+      const response = await fetch(apiUrl("/api/users/invite"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,7 +142,7 @@ function UserManagement() {
   const handleRoleChange = async (userId: number, newRole: string) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/users/${userId}/role`, {
+      const response = await fetch(apiUrl(`/api/users/${userId}/role`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -180,7 +181,7 @@ function UserManagement() {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+      const response = await fetch(apiUrl(`/api/users/${userId}`), {
         method: "DELETE",
         headers: {
           "x-auth-token": token || "",

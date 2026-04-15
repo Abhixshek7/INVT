@@ -25,6 +25,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { apiUrl } from "@/lib/api";
 
 const chartData = [
   { date: "2024-01-01", sales: 42000, forecast: 40000 },
@@ -62,7 +63,7 @@ export function ChartAreaInteractive() {
   const { data: salesData, isLoading } = useQuery({
     queryKey: ["sales-trend"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/api/dashboard/sales-trend");
+      const res = await fetch(apiUrl("/api/dashboard/sales-trend"));
       if (!res.ok) throw new Error("Failed to fetch sales trend");
       const data = await res.json();
       // Map API data to chart format

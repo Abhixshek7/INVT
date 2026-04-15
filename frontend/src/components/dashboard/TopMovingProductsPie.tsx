@@ -3,6 +3,7 @@
 import { TrendingUp } from "lucide-react"
 import { Pie, PieChart } from "recharts"
 import { useQuery } from "@tanstack/react-query"
+import { apiUrl } from "@/lib/api"
 
 import {
     Card,
@@ -29,7 +30,7 @@ export function TopMovingProductsPie() {
     const { data: topProducts = [] } = useQuery({
         queryKey: ["top-products"],
         queryFn: async () => {
-            const res = await fetch("http://localhost:5000/api/dashboard/top-products");
+            const res = await fetch(apiUrl("/api/dashboard/top-products"));
             if (!res.ok) throw new Error("Failed to fetch top products");
             return res.json();
         }

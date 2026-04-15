@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { useQuery } from "@tanstack/react-query";
+import { apiUrl } from "@/lib/api";
 
 interface Supplier {
     id: number;
@@ -71,7 +72,7 @@ export default function SuppliersPage() {
         queryKey: ["suppliers"],
         queryFn: async () => {
             const token = localStorage.getItem("token");
-            const res = await fetch("http://localhost:5000/api/suppliers", {
+            const res = await fetch(apiUrl("/api/suppliers"), {
                 headers: {
                     "x-auth-token": token || "",
                 },

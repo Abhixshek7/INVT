@@ -25,6 +25,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { apiUrl } from "@/lib/api";
 
 const getUrgency = (stock: number, threshold: number) => {
   if (stock === 0) return "out_of_stock";
@@ -36,7 +37,7 @@ export function InventoryAlerts() {
   const { data: alertsData, isLoading } = useQuery({
     queryKey: ["low-stock-alerts"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/api/dashboard/low-stock");
+      const res = await fetch(apiUrl("/api/dashboard/low-stock"));
       if (!res.ok) throw new Error("Failed to fetch low stock items");
       return res.json();
     }
