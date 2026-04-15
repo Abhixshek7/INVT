@@ -42,7 +42,7 @@ export default function LowStockPage() {
     queryKey: ["inventory"],
     queryFn: async () => {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/inventory`, {
+      const res = await fetch("http://localhost:5000/api/inventory", {
         headers: {
           "x-auth-token": token || "",
         },

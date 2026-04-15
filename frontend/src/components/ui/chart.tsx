@@ -40,7 +40,7 @@ const ChartContainer = React.forwardRef<
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
 
   return (
-    <ChartContext.Provider value={{ config }>
+    <ChartContext.Provider value={{ config }}>
       <div
         data-chart={chartId}
         ref={ref}
@@ -82,7 +82,7 @@ ${colorConfig
 `,
           )
           .join("\n"),
-      }
+      }}
     />
   );
 };
@@ -262,7 +262,7 @@ const ChartLegendContent = React.forwardRef<
                 className="h-2 w-2 shrink-0 rounded-[2px]"
                 style={{
                   backgroundColor: item.color,
-                }
+                }}
               />
             )}
             {itemConfig?.label}

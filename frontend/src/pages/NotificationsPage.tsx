@@ -117,7 +117,7 @@ export default function NotificationsPage() {
   const { data: apiNotifications = [], isLoading } = useQuery({
     queryKey: ["notifications"],
     queryFn: async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/dashboard/notifications`);
+      const res = await fetch("http://localhost:5000/api/dashboard/notifications");
       if (!res.ok) throw new Error("Failed to fetch notifications");
       return res.json();
     }

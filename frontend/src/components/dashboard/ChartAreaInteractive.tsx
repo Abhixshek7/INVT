@@ -62,7 +62,7 @@ export function ChartAreaInteractive() {
   const { data: salesData, isLoading } = useQuery({
     queryKey: ["sales-trend"],
     queryFn: async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/dashboard/sales-trend`);
+      const res = await fetch("http://localhost:5000/api/dashboard/sales-trend");
       if (!res.ok) throw new Error("Failed to fetch sales trend");
       const data = await res.json();
       // Map API data to chart format
@@ -172,7 +172,7 @@ export function ChartAreaInteractive() {
                   month: "short",
                   day: "numeric",
                 });
-              }
+              }}
             />
             <YAxis
               tickLine={false}
@@ -190,7 +190,7 @@ export function ChartAreaInteractive() {
                       day: "numeric",
                       year: "numeric",
                     });
-                  }
+                  }}
                   indicator="dot"
                   formatter={(value, name) => (
                     <span>

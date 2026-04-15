@@ -81,7 +81,7 @@ export default function PurchaseOrdersPage() {
         queryKey: ["purchase-orders"],
         queryFn: async () => {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/purchase-orders`, {
+            const res = await fetch("http://localhost:5000/api/purchase-orders", {
                 headers: {
                     "x-auth-token": token || "",
                 },
