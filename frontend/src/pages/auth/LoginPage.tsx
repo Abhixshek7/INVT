@@ -27,7 +27,7 @@ export default function LoginPage() {
   });
 
   const handleGoogleLogin = () => {
-    window.location.href = "https://invt-nzwm.onrender.com/api/auth/google/callback";
+    window.location.href = "https://invt-nzwm.onrender.com/api/auth/google";
   };
 
   // Check for token or error in URL on load
