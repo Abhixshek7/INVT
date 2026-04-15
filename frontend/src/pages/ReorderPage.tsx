@@ -391,8 +391,8 @@ export default function ReorderPage() {
                                                 onClick={() => {
                                                     setSelectedUrgency("all");
                                                     setSelectedCategory("all");
-                                                }
-                                            >
+                                                }}
+                                                >
                                                 Clear filters
                                             </Button>
                                         )}
