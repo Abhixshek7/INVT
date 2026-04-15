@@ -237,7 +237,7 @@ export default function NotificationsPage() {
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleFavorite(notification.id);
-                      }
+                      }}
                     >
                       {notification.isFavorite ? (
                         <IconStarFilled className="size-4 text-yellow-500" />
@@ -267,7 +267,7 @@ export default function NotificationsPage() {
                       onClick={(e) => {
                         e.stopPropagation();
                         deleteNotification(notification.id);
-                      }
+                      }}
                     >
                       <IconTrash className="size-4" />
                     </Button>
