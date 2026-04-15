@@ -225,7 +225,7 @@ export default function InventoryPage() {
                         onClick={() => {
                           setSelectedCategory("All Categories");
                           setSelectedStatus("all");
-                        }
+                        }}
                       >
                         Clear filters
                       </Button>
